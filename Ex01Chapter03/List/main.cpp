@@ -20,11 +20,11 @@
 int main()
 {
 	List<ScoreData> list;
-	ConstIterator<ScoreData> itr;
+	Iterator<ScoreData> itr = list.GetBegin();
 	std::ifstream ifs("scores.txt");
 	if (!ifs) return -1;
 	ScoreData data = {};
-	
+
 	std::cout << "テキストファイル読み込み開始" << std::endl;
 	while (!ifs.eof())
 	{

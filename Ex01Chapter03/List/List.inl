@@ -49,7 +49,7 @@ template<class T>
 bool List<T>::Insert(Iterator<T> itr, const T& value)
 {
 	// 不正イテレータによる挿入失敗
-	if (!itr.m_pList != this) return false;
+	if (itr.m_pList != this) return false;
 	if (!itr.m_pNode) return false;
 
 	// 新規ノードの生成と設定

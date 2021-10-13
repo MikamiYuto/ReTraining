@@ -19,16 +19,16 @@ public:
 	friend class List<T>;
 
 protected:
-	typename List<T>*		m_pList;		//!< イテレータの参照先リスト
+	typename const List<T>*	m_pList;		//!< イテレータの参照先リスト
 	typename List<T>::Node* m_pNode;		//!< イテレータが指し示すノード
 
 public:
 	/**
-	 * @breif		コンストラクタ
+	 * @breif			コンストラクタ
 	 * @param[in] pList イテレータが参照するリスト
 	 * @param[in] pNode イテレータが指し示す要素
 	 */
-	ConstIterator(typename List<T>* pList = nullptr, typename List<T>::Node* pNode = nullptr);
+	ConstIterator(const List<T>* pList = nullptr, typename List<T>::Node* pNode = nullptr);
 	/**
 	 * @breif デストラクタ
 	 */
@@ -88,10 +88,17 @@ public:
 	 * @param[in] p イテレータが参照するリスト
 	 * @param[in] p イテレータが指し示すノード
 	 */
-	Iterator(typename List<T>* pList = nullptr, typename List<T>::Node* pNode = nullptr);
+	Iterator(List<T>* pList = nullptr, typename List<T>::Node* pNode = nullptr);
 	/**
 	 * @breif デストラクタ
 	 */
 	~Iterator();
+
+public:
+	/**
+	 * @breif	関節演算子のオーバーロード
+	 * @return	イテレータが指す要素
+	 */
+	T& operator*();
 };
 #include "Iterator.inl"

@@ -17,7 +17,7 @@
 //=============================================================================
 //-----------------------------------------------------------------------------
 template<class T>
-ConstIterator<T>::ConstIterator(typename List<T>* pList, typename List<T>::Node* pNode)
+ConstIterator<T>::ConstIterator(const List<T>* pList, typename List<T>::Node* pNode)
 	: m_pList(pList)
 	, m_pNode(pNode)
 {
@@ -87,6 +87,8 @@ const T& ConstIterator<T>::operator*()
 {
 	assert(m_pList);
 	assert(m_pNode);
+	assert(this->m_pNode != this->m_pNode->pBack);
+	assert(this->m_pNode != this->m_pNode->pFront);
 	return (*m_pNode).data;
 }
 //=============================================================================
@@ -94,7 +96,7 @@ const T& ConstIterator<T>::operator*()
 //=============================================================================
 //-----------------------------------------------------------------------------
 template<class T>
-Iterator<T>::Iterator(typename List<T>* pList, typename List<T>::Node* pNode)
+Iterator<T>::Iterator(List<T>* pList, typename List<T>::Node* pNode)
 	: ConstIterator<T>(pList, pNode)
 {
 }
@@ -102,4 +104,14 @@ Iterator<T>::Iterator(typename List<T>* pList, typename List<T>::Node* pNode)
 template<class T>
 Iterator<T>::~Iterator()
 {
+}
+//-----------------------------------------------------------------------------
+template<class T>
+inline T & Iterator<T>::operator*()
+{
+	assert(this->m_pList);
+	assert(this->m_pNode);
+	assert(this->m_pNode != this->m_pNode->pBack);
+	assert(this->m_pNode != this->m_pNode->pFront);
+	return (*this->m_pNode).data;
 }

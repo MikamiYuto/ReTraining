@@ -25,8 +25,8 @@ public:
 	};
 
 private:
-	Node*	m_pDummyNode;			//!< ダミーノード
-	int		m_NodeCnt;				//!< 要素数（ダミーは未カウント
+	Node*	m_pDummyNode;	//!< ダミーノード
+	int		m_NodeCnt;		//!< 要素数（ダミーは未カウント
 
 public:
 	/**
