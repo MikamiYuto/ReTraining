@@ -47,6 +47,6 @@ public:
 	 * @param[in] out	æ‚èo‚µ‚½’l‚Ìóææ
 	 * @return			æ‚èo‚µ‚Ì¬”Û
 	 */
-	bool Pop(T* out);
+	bool Pop(T* out = nullptr);
 };
 #include "Stack.inl"

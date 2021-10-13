@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GtaTestDurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Executable>C:\Users\PC_User\Desktop\ReTraining\Ex01Chapter04\x64\Debug\Stack-Test.exe</Executable>
+  <TestDurations>
+    <TestDuration Test="StackManualTest.TestGetDataNumIsConst" Duration="1" />
+    <TestDuration Test="StackManualTest.TestPushIsConst" Duration="1" />
+    <TestDuration Test="StackManualTest.TestPopIsConst" Duration="1" />
+    <TestDuration Test="StackGetDataNumTest.TestGetDataNumWhenEmpty" Duration="1" />
+    <TestDuration Test="StackGetDataNumTest.TestGetDataNumAfterPush" Duration="1" />
+    <TestDuration Test="StackGetDataNumTest.TestGetDataNumAfterPop" Duration="1" />
+    <TestDuration Test="StackGetDataNumTest.TestGetDataNumAfterPushFailed" Duration="1" />
+    <TestDuration Test="StackGetDataNumTest.TestGetDataNumAfterPushX2" Duration="1" />
+    <TestDuration Test="StackGetDataNumTest.TestGetDataNumAfterPushX2Pop" Duration="1" />
+    <TestDuration Test="StackGetDataNumTest.TestGetDataNumWhenEmptyAfterPop" Duration="1" />
+    <TestDuration Test="StackPushTest.TestPushWhenEmpty" Duration="1" />
+    <TestDuration Test="StackPushTest.TestPush" Duration="1" />
+    <TestDuration Test="StackPopTest.TestPopWhenEmpty" Duration="1" />
+    <TestDuration Test="StackPopTest.TestPop" Duration="1" />
+    <TestDuration Test="StackPopTest.TestPopMany" Duration="1" />
+  </TestDurations>
+</GtaTestDurations>

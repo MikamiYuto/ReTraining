@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GtaTestDurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Executable>C:\Users\PC_User\Desktop\ReTraining\Ex01Chapter04\x64\Debug\Queue-Test.exe</Executable>
+  <TestDurations>
+    <TestDuration Test="QueueManualTest.TestGetDataNumIsConst" Duration="1" />
+    <TestDuration Test="QueueManualTest.TestPushIsConst" Duration="1" />
+    <TestDuration Test="QueueManualTest.TestPopIsConst" Duration="1" />
+    <TestDuration Test="QueueGetDataNumTest.TestGetDataNumWhenEmpty" Duration="1" />
+    <TestDuration Test="QueueGetDataNumTest.TestGetDataNumAfterPush" Duration="1" />
+    <TestDuration Test="QueueGetDataNumTest.TestGetDataNumAfterPop" Duration="1" />
+    <TestDuration Test="QueueGetDataNumTest.TestGetDataNumAfterPushFailed" Duration="1" />
+    <TestDuration Test="QueueGetDataNumTest.TestGetDataNumAfterPushX2" Duration="1" />
+    <TestDuration Test="QueueGetDataNumTest.TestGetDataNumAfterPushX2Pop" Duration="1" />
+    <TestDuration Test="QueueGetDataNumTest.TestGetDataNumWhenEmptyAfterPop" Duration="1" />
+    <TestDuration Test="QueuePushTest.TestPushWhenEmpty" Duration="1" />
+    <TestDuration Test="QueuePushTest.TestPush" Duration="1" />
+    <TestDuration Test="QueuePopTest.TestPopWhenEmpty" Duration="1" />
+    <TestDuration Test="QueuePopTest.TestPop" Duration="1" />
+    <TestDuration Test="QueuePopTest.TestPopMany" Duration="1" />
+  </TestDurations>
+</GtaTestDurations>
