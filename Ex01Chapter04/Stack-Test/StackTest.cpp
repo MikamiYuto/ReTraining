@@ -40,7 +40,7 @@ TEST(StackGetDataNumTest, TestGetDataNumAfterPop)
 {
 	Stack<int> stack;
 	ASSERT_TRUE(stack.Push(0));
-	ASSERT_FALSE(stack.Pop());
+	ASSERT_TRUE(stack.Pop());
 	EXPECT_EQ(0, stack.GetCount());
 }
 /**

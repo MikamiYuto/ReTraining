@@ -26,17 +26,23 @@ Queue<T>::~Queue()
 template<class T>
 int Queue<T>::GetCount() const
 {
-	return 0;
+	return m_List.GetCount();
 }
 //-----------------------------------------------------------------------------
 template<class T>
 bool Queue<T>::Push(const T& value)
 {
-	return false;
+	return m_List.Insert(m_List.GetEnd(), value);
 }
 //-----------------------------------------------------------------------------
 template<class T>
 bool Queue<T>::Pop(T* out)
 {
-	return false;
+	// æ‚èo‚·‚à‚Ì‚ª–³‚¯‚ê‚Î‰½‚à‚µ‚È‚¢
+	if (m_List.GetCount() == 0) return false;
+	// —v‘fæ“¾
+	Iterator<T> itr = m_List.GetBegin();
+	if (out) *out = *itr;
+	// —v‘fíœ
+	return m_List.Erase(itr);
 }

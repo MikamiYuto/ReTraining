@@ -40,7 +40,7 @@ TEST(QueueGetDataNumTest, TestGetDataNumAfterPop)
 {
 	Queue<int> queue;
 	ASSERT_TRUE(queue.Push(0));
-	ASSERT_FALSE(queue.Pop());
+	ASSERT_TRUE(queue.Pop());
 	EXPECT_EQ(0, queue.GetCount());
 }
 /**

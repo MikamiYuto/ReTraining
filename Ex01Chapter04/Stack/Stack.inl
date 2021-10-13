@@ -9,6 +9,7 @@
 
 //----- インクルード
 #include "Stack.h"
+#include "Iterator.h"
 
 
 //-----------------------------------------------------------------------------
@@ -26,17 +27,23 @@ Stack<T>::~Stack()
 template<class T>
 int Stack<T>::GetCount() const
 {
-	return 0;
+	return m_List.GetCount();
 }
 //-----------------------------------------------------------------------------
 template<class T>
 bool Stack<T>::Push(const T& value)
 {
-	return false;
+	return m_List.Insert(m_List.GetBegin(), value);
 }
 //-----------------------------------------------------------------------------
 template<class T>
 bool Stack<T>::Pop(T* out)
 {
-	return false;
+	// 取り出すものが無ければ何もしない
+	if (m_List.GetCount() == 0) return false;
+	// 要素取得
+	Iterator<T> itr = m_List.GetBegin();
+	if (out) *out = *itr;
+	// 要素削除
+	return m_List.Erase(itr);
 }
