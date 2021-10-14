@@ -1,6 +1,6 @@
 /**
  * @file StackTest.h
- * @breif テンプレートスタッククラスのテスト定義ファイル
+ * @brief テンプレートスタッククラスのテスト定義ファイル
  * @author MikamiYuto
  * @date 2021.10.14
  */

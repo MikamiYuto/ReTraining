@@ -1,6 +1,6 @@
 /**
  * @file List.h
- * @breif テンプレート双方向リストクラスの定義ファイル
+ * @brief テンプレート双方向リストクラスの定義ファイル
  * @author MikamiYuto
  * @date 2021.10.08
  */
@@ -33,49 +33,49 @@ public:
 
 	public:
 		/**
-		 * @breif			コンストラクタ
+		 * @brief			コンストラクタ
 		 * @param[in] pList イテレータが参照するリスト
 		 * @param[in] pNode イテレータが指し示す要素
 		 */
 		ConstIterator(typename const List<T>* pList = nullptr, typename List<T>::Node* pNode = nullptr);
 		/**
-		 * @breif デストラクタ
+		 * @brief デストラクタ
 		 */
 		virtual ~ConstIterator();
 	
 	public:
 		/**
-		 * @breif	前置インクリメント演算子のオーバーロード
+		 * @brief	前置インクリメント演算子のオーバーロード
 		 * @return	ノードを末尾へ一つずらした後のイテレータ
 		 */
 		typename ConstIterator& operator++();
 		/**
-		 * @breif	後置インクリメント演算子のオーバーロード
+		 * @brief	後置インクリメント演算子のオーバーロード
 		 * @return	現在のノードを指すイテレータ
 		 */
 		typename ConstIterator operator++(int);
 		/**
-		 * @breif	前置デクリメント演算子のオーバーロード
+		 * @brief	前置デクリメント演算子のオーバーロード
 		 * @return	ノードを先頭へ一つずらした後のイテレータ
 		 */
 		typename ConstIterator& operator--();
 		/**
-		 * @breif	後置デクリメント演算子のオーバーロード
+		 * @brief	後置デクリメント演算子のオーバーロード
 		 * @return	現在のノードを指すイテレータ
 		 */
 		typename ConstIterator operator--(int);
 		/**
-		 * @breif	等価演算子のオーバーロード
+		 * @brief	等価演算子のオーバーロード
 		 * @return	等価比較結果
 		 */
 		bool operator==(typename const ConstIterator& itr) const;
 		/**
-		 * @breif	非等価演算子のオーバーロード
+		 * @brief	非等価演算子のオーバーロード
 		 * @return	非等価比較結果
 		 */
 		bool operator!=(typename const ConstIterator& itr) const;
 		/**
-		 * @breif	関節演算子のオーバーロード
+		 * @brief	関節演算子のオーバーロード
 		 * @return	イテレータが指す要素の値
 		 */
 		const T& operator*() const;
@@ -87,26 +87,26 @@ public:
 	{
 	public:
 		/**
-		 * @breif			コンストラクタ
+		 * @brief			コンストラクタ
 		 * @param[in] pList イテレータが参照するリスト
 		 * @param[in] pNode イテレータが指し示すノード
 		 */
 		Iterator(typename const List<T>* pList = nullptr, typename List<T>::Node* pNode = nullptr);
 		/**
-		 * @breif デストラクタ
+		 * @brief デストラクタ
 		 */
 		~Iterator();
 	
 	public:
 		/**
-		 * @breif	関節演算子のオーバーロード
+		 * @brief	関節演算子のオーバーロード
 		 * @return	イテレータが指す要素の値
 		 */
 		T& operator*();
 	};
 
 private:
-	Node	m_DummyNode;	//!< ダミーノード
+	Node*	m_pDummyNode;	//!< ダミーノード
 	int		m_ElementCnt;	//!< 要素数（ダミーは未カウント
 
 public:

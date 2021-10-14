@@ -1,6 +1,6 @@
 /**
  * @file ScoreData.h
- * @breif 成績データ構造体の定義ファイル
+ * @brief 成績データ構造体の定義ファイル
  * @author MikamiYuto
  * @date 2021.10.08
  */
@@ -20,7 +20,7 @@ public:
 
 public:
 	/**
-	 * @breif	等価比較演算子オーバーロード
+	 * @brief	等価比較演算子オーバーロード
 	 * @return	スコアとユーザ名の両方を比較し、等価であればtrueを返します
 	 */
 	bool operator==(const ScoreData& data) const;

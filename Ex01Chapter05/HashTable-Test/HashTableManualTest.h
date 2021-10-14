@@ -1,6 +1,6 @@
 /**
  * @file HashTableManualTest.h
- * @breif テンプレートリストクラスのテスト定義ファイル
+ * @brief テンプレートリストクラスのテスト定義ファイル
  * @author MikamiYuto
  * @date 2021.10.14
  */
@@ -30,5 +30,5 @@
 class HashTableManualTest : public ::testing::Test
 {
 protected:
-	const HashTable<std::string, int, CalcHash, DEFAULT_HASH_PACKET_SIZE> m_HashTable;
+	const HashTable<std::string, int, CalcHash, DEFAULT_HASH_PACKET_SIZE> m_HashTable; //!< コンストハッシュテーブル
 };

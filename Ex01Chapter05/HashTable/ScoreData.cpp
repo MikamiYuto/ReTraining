@@ -1,6 +1,6 @@
 /**
  * @file ScoreData.cpp
- * @breif 成績データ構造体の実装ファイル
+ * @brief 成績データ構造体の実装ファイル
  * @author MikamiYuto
  * @date 2021.10.08
  */

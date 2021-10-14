@@ -170,7 +170,7 @@ TEST_F(HashTableInsertTest, TestInsertUnDup)
 TEST_F(HashTableInsertTest, TestInsertDup)
 {
 	SetUpUnChainHash();
-	EXPECT_TRUE(m_HashTable.Insert("one", 10));
+	EXPECT_FALSE(m_HashTable.Insert("one", 10));
 }
 /**
  * @brief	複数要素がある場合に、ハッシュ値が同じにあるキーで挿入した際の挙動テスト
@@ -323,7 +323,8 @@ TEST_F(HashTableFindTest, TestFindEraseKey)
 	int check = 0;
 	ASSERT_TRUE(m_HashTable.Erase(key));
 	EXPECT_FALSE(m_HashTable.Find(key, &check));
-	EXPECT_EQ(check, 1);
+	// 変な値が代入されていないかチェック
+	EXPECT_EQ(check, 0);
 }
 /**
  * @brief	チェインした要素がある時に、そのうちの1つのを検索した際の挙動テスト

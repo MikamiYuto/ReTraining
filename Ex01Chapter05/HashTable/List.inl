@@ -1,6 +1,6 @@
 /**
  * @file List.inl
- * @breif テンプレート双方向リストクラスの実装ファイル
+ * @brief テンプレート双方向リストクラスの実装ファイル
  * @author MikamiYuto
  * @date 2021.10.11
  */
@@ -121,25 +121,27 @@ T& List<T>::Iterator::operator*()
 //-----------------------------------------------------------------------------
 template<class T>
 List<T>::List()
-	: m_DummyNode()
+	: m_pDummyNode()
 	, m_ElementCnt(0)
 {
-	m_DummyNode.pFront = &m_DummyNode;
-	m_DummyNode.pBack = &m_DummyNode;
+	m_pDummyNode = new Node;
+	m_pDummyNode->pFront = m_pDummyNode;
+	m_pDummyNode->pBack = m_pDummyNode;
 }
 //-----------------------------------------------------------------------------
 template<class T>
 List<T>::~List()
 {
-	Node* pNode = m_DummyNode.pBack;
+	Node* pNode = m_pDummyNode->pBack;
 	Node* pDeleteNode = nullptr;
 	// 先頭からノードを順に削除していく
-	while (pNode != &m_DummyNode)
+	while (pNode != m_pDummyNode)
 	{
 		pDeleteNode = pNode;
 		pNode = pNode->pBack;
 		delete pDeleteNode;
 	}
+	delete m_pDummyNode;
 }
 //-----------------------------------------------------------------------------
 template<class T>
@@ -178,7 +180,7 @@ bool List<T>::Erase(typename List<T>::ConstIterator& itr)
 	// 不正イテレータ(ノード未参照)による削除失敗
 	if (!itr.m_pNode) return false;
 	// ダミーノードの場合も削除失敗
-	if (itr.m_pNode == &m_DummyNode) return false;
+	if (itr.m_pNode == m_pDummyNode) return false;
 
 	// 前後のノードの接続を修正
 	itr.m_pNode->pBack->pFront = itr.m_pNode->pFront;
@@ -195,23 +197,23 @@ bool List<T>::Erase(typename List<T>::ConstIterator& itr)
 template<class T>
 typename List<T>::Iterator List<T>::begin()
 {
-	return Iterator(this, m_DummyNode.pBack);
+	return Iterator(this, m_pDummyNode->pBack);
 }
 //-----------------------------------------------------------------------------
 template<class T>
 typename List<T>::ConstIterator List<T>::begin() const
 {
-	return List<T>::ConstIterator(this, m_DummyNode.pBack);
+	return List<T>::ConstIterator(this, m_pDummyNode->pBack);
 }
 //-----------------------------------------------------------------------------
 template<class T>
 typename List<T>::Iterator List<T>::end()
 {
-	return Iterator(this, &m_DummyNode);
+	return Iterator(this, m_pDummyNode);
 }
 //-----------------------------------------------------------------------------
 template<class T>
 typename List<T>::ConstIterator List<T>::end() const
 {
-	return List<T>::ConstIterator(this, &m_DummyNode);
+	return List<T>::ConstIterator(this, m_pDummyNode);
 }

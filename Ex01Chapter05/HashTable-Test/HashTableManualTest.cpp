@@ -1,6 +1,6 @@
 /**
  * @file HashTableManualTest.cpp
- * @breif テンプレートハッシュテーブルクラスの手動テスト実装ファイル
+ * @brief テンプレートハッシュテーブルクラスの手動テスト実装ファイル
  * @author MikamiYuto
  * @date 2021.10.14
  */
@@ -17,7 +17,7 @@
  * @brief	不適切なハッシュ関数がテンプレート引数で渡された時のテスト
  * @deteils	ID:ハッシュテーブル-0(手動)
  */
-TEST(HashTableManualTest, TestClassHashFunc)
+TEST(HashTableManualClassTest, TestClassHashFunc)
 {
 #if defined TEST_CLASS_HASH_FUNC
 	HashTable<float, int, CalcHash, DEFAULT_HASH_PACKET_SIZE> hashTable;

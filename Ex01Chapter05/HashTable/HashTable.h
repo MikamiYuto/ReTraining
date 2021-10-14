@@ -1,6 +1,6 @@
 /**
  * @file HashTable.h
- * @breif テンプレートハッシュテーブルクラスの定義ファイル
+ * @brief テンプレートハッシュテーブルクラスの定義ファイル
  * @author MikamiYuto
  * @date 2021.10.13
  */
@@ -26,7 +26,7 @@ static int CalcHash(const std::string& key);
  * @param Key			キー値
  * @param Value			値
  * @param CalcHashFunc	ハッシュ値導出関数
- * @param SIZE			パケットサイズ
+ * @param SIZE			パケットサイズ(ハッシュ関数から導出される値を含めれる値を指定
  */
 template<class Key, class Value, int(*CalcHashFunc)(const Key&), int SIZE>
 class HashTable
@@ -40,7 +40,8 @@ private:
 	};
 
 private:
-	List<Pair> m_Table[SIZE];			//!< ペア格納テーブル
+	List<Pair>	m_Table[SIZE];			//!< ペア格納テーブル
+	int			m_ElementCnt;			//!< 要素数
 
 public:
 	/**
@@ -85,5 +86,14 @@ public:
 	 *					・キーが存在しない（削除済、未挿入、空
 	 */
 	bool Find(const Key& key, Value* out = nullptr) const;
+
+private:
+	/**
+	 * @brief			キーからハッシュ値が指すリストへの参照を取得する
+	 *					CalcHashFuncとSIZEのいずれかに問題がある場合Assert発生
+	 * @param[in] key	キー値
+	 * @return			ハッシュ値
+	 */
+	int GetHash(const Key& key) const;
 };
 #include "HashTable.inl"
