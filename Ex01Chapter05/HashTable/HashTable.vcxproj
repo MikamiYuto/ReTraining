@@ -124,12 +124,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ScoreData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="List.h" />
-    <ClInclude Include="ScoreData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HashTable.inl" />
