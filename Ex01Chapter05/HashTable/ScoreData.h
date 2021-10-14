@@ -21,7 +21,7 @@ public:
 public:
 	/**
 	 * @breif	等価比較演算子オーバーロード
-	 * @details	メンバ変数のスコアとユーザ名の両方を比較し、等価であればtrueを返します
+	 * @return	スコアとユーザ名の両方を比較し、等価であればtrueを返します
 	 */
 	bool operator==(const ScoreData& data) const;
 };

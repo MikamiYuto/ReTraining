@@ -9,47 +9,151 @@
 
 //----- インクルード
 #include "List.h"
-#include "Iterator.h"
+#include <cassert>
 
 
+//=============================================================================
+// コンストイテレータの実装
+//=============================================================================
+//-----------------------------------------------------------------------------
+template<class T>
+List<T>::ConstIterator::ConstIterator(typename const List<T>* pList, typename List<T>::Node* pNode)
+	: m_pList(pList)
+	, m_pNode(pNode)
+{
+}
+//-----------------------------------------------------------------------------
+template<class T>
+List<T>::ConstIterator::~ConstIterator()
+{
+}
+//-----------------------------------------------------------------------------
+template<class T>
+typename List<T>::ConstIterator& List<T>::ConstIterator::operator++()
+{
+	assert(m_pList);
+	assert(m_pNode);
+	assert(m_pNode != m_pNode->pBack);
+	m_pNode = m_pNode->pBack;
+	return *this;
+}
+//-----------------------------------------------------------------------------
+template<class T>
+typename List<T>::ConstIterator List<T>::ConstIterator::operator++(int)
+{
+	assert(m_pList);
+	assert(m_pNode);
+	assert(m_pNode != m_pNode->pBack);
+	typename List<T>::ConstIterator itr = *this;
+	m_pNode = m_pNode->pBack;
+	return itr;
+}
+//-----------------------------------------------------------------------------
+template<class T>
+typename List<T>::ConstIterator& List<T>::ConstIterator::operator--()
+{
+	assert(m_pList);
+	assert(m_pNode);
+	assert(m_pNode != m_pNode->pFront);
+	m_pNode = m_pNode->pFront;
+	return *this;
+}
+//-----------------------------------------------------------------------------
+template<class T>
+typename List<T>::ConstIterator List<T>::ConstIterator::operator--(int)
+{
+	assert(m_pList);
+	assert(m_pNode);
+	assert(m_pNode != m_pNode->pFront);
+	typename List<T>::ConstIterator itr = *this;
+	m_pNode = m_pNode->pFront;
+	return itr;
+}
+//-----------------------------------------------------------------------------
+template<class T>
+bool List<T>::ConstIterator::operator==(typename const ConstIterator& itr) const
+{
+	return m_pNode == itr.m_pNode;
+}
+//-----------------------------------------------------------------------------
+template<class T>
+bool List<T>::ConstIterator::operator!=(typename const ConstIterator& itr) const
+{
+	return m_pNode != itr.m_pNode;
+}
+//-----------------------------------------------------------------------------
+template<class T>
+const T& List<T>::ConstIterator::operator*() const
+{
+	assert(m_pList);
+	assert(m_pNode);
+	assert(m_pNode != m_pNode->pBack);
+	assert(m_pNode != m_pNode->pFront);
+	return (*m_pNode).data;
+}
+//=============================================================================
+// イテレータの実装
+//=============================================================================
+//-----------------------------------------------------------------------------
+template<class T>
+List<T>::Iterator::Iterator(typename const List<T>* pList, typename List<T>::Node* pNode)
+	: ConstIterator(pList, pNode)
+{
+}
+//-----------------------------------------------------------------------------
+template<class T>
+List<T>::Iterator::~Iterator()
+{
+}
+//-----------------------------------------------------------------------------
+template<class T>
+T& List<T>::Iterator::operator*()
+{
+	assert(this->m_pList);
+	assert(this->m_pNode);
+	assert(this->m_pNode != this->m_pNode->pBack);
+	assert(this->m_pNode != this->m_pNode->pFront);
+	return (*this->m_pNode).data;
+}
+//=============================================================================
+// リストの実装
+//=============================================================================
 //-----------------------------------------------------------------------------
 template<class T>
 List<T>::List()
-	: m_pDummyNode(nullptr)
-	, m_NodeCnt(0)
+	: m_DummyNode()
+	, m_ElementCnt(0)
 {
-	m_pDummyNode = new Node;
-	m_pDummyNode->pFront = m_pDummyNode;
-	m_pDummyNode->pBack = m_pDummyNode;
+	m_DummyNode.pFront = &m_DummyNode;
+	m_DummyNode.pBack = &m_DummyNode;
 }
 //-----------------------------------------------------------------------------
 template<class T>
 List<T>::~List()
 {
-	Node* pNode = m_pDummyNode->pBack;
+	Node* pNode = m_DummyNode.pBack;
 	Node* pDeleteNode = nullptr;
 	// 先頭からノードを順に削除していく
-	while (pNode != m_pDummyNode)
+	while (pNode != &m_DummyNode)
 	{
 		pDeleteNode = pNode;
 		pNode = pNode->pBack;
 		delete pDeleteNode;
 	}
-	delete m_pDummyNode;// 最後
-	m_pDummyNode = nullptr;
 }
 //-----------------------------------------------------------------------------
 template<class T>
 int List<T>::GetCount() const
 {
-	return m_NodeCnt;
+	return m_ElementCnt;
 }
 //-----------------------------------------------------------------------------
 template<class T>
-bool List<T>::Insert(Iterator<T> itr, const T& value)
+bool List<T>::Insert(typename List<T>::ConstIterator& itr, const T& value)
 {
-	// 不正イテレータによる挿入失敗
+	// 不正イテレータ(別リスト参照)による挿入失敗
 	if (itr.m_pList != this) return false;
+	// 不正イテレータ(ノード未参照)による挿入失敗
 	if (!itr.m_pNode) return false;
 
 	// 新規ノードの生成と設定
@@ -61,40 +165,20 @@ bool List<T>::Insert(Iterator<T> itr, const T& value)
 	itr.m_pNode->pFront = newNode;
 	newNode->pFront->pBack = newNode;
 	// リスト要素数+1
-	++m_NodeCnt;
+	++m_ElementCnt;
 
 	return true; // 挿入成功
 }
 //-----------------------------------------------------------------------------
 template<class T>
-bool List<T>::Insert(ConstIterator<T> itr, const T& value)
+bool List<T>::Erase(typename List<T>::ConstIterator& itr)
 {
-	// 不正イテレータによる挿入失敗
+	// 不正イテレータ(別リスト参照)による削除失敗
 	if (itr.m_pList != this) return false;
-	if (!itr.m_pNode) return false;
-
-	// 新規ノードの生成と設定
-	Node* newNode = new Node;
-	newNode->data = value;
-	newNode->pBack = itr.m_pNode;
-	newNode->pFront = itr.m_pNode->pFront;
-	// 前後のノードの接続を修正
-	itr.m_pNode->pFront = newNode;
-	newNode->pFront->pBack = newNode;
-	// リスト要素数+1
-	++m_NodeCnt;
-
-	return true; // 挿入成功
-}
-//-----------------------------------------------------------------------------
-template<class T>
-bool List<T>::Erase(Iterator<T> itr)
-{
-	// 不正イテレータによる削除失敗
-	if (itr.m_pList != this) return false;
+	// 不正イテレータ(ノード未参照)による削除失敗
 	if (!itr.m_pNode) return false;
 	// ダミーノードの場合も削除失敗
-	if (itr.m_pNode == m_pDummyNode) return false;
+	if (itr.m_pNode == &m_DummyNode) return false;
 
 	// 前後のノードの接続を修正
 	itr.m_pNode->pBack->pFront = itr.m_pNode->pFront;
@@ -103,52 +187,31 @@ bool List<T>::Erase(Iterator<T> itr)
 	delete itr.m_pNode;
 	itr.m_pNode = nullptr;
 	// リスト要素数-1
-	--m_NodeCnt;
+	--m_ElementCnt;
 
-	return true;	// 削除成功
+	return true; // 削除成功
 }
 //-----------------------------------------------------------------------------
 template<class T>
-bool List<T>::Erase(ConstIterator<T> itr)
+typename List<T>::Iterator List<T>::begin()
 {
-	// 不正イテレータによる削除失敗
-	if (itr.m_pList != this) return false;
-	if (!itr.m_pNode) return false;
-	// ダミーノードの場合も削除失敗
-	if (itr.m_pNode == m_pDummyNode) return false;
-
-	// 前後のノードの接続を修正
-	itr.m_pNode->pBack->pFront = itr.m_pNode->pFront;
-	itr.m_pNode->pFront->pBack = itr.m_pNode->pBack;
-	// 該当ノードを削除
-	delete itr.m_pNode;
-	itr.m_pNode = nullptr;
-	// リスト要素数-1
-	--m_NodeCnt;
-
-	return true;	// 削除成功
+	return Iterator(this, m_DummyNode.pBack);
 }
 //-----------------------------------------------------------------------------
 template<class T>
-Iterator<T> List<T>::GetBegin()
+typename List<T>::ConstIterator List<T>::begin() const
 {
-	return Iterator<T>(this, m_pDummyNode->pBack);
+	return List<T>::ConstIterator(this, m_DummyNode.pBack);
 }
 //-----------------------------------------------------------------------------
 template<class T>
-ConstIterator<T> List<T>::GetConstBegin() const
+typename List<T>::Iterator List<T>::end()
 {
-	return ConstIterator<T>(this, m_pDummyNode->pBack);
+	return Iterator(this, &m_DummyNode);
 }
 //-----------------------------------------------------------------------------
 template<class T>
-Iterator<T> List<T>::GetEnd()
+typename List<T>::ConstIterator List<T>::end() const
 {
-	return Iterator<T>(this, m_pDummyNode);
-}
-//-----------------------------------------------------------------------------
-template<class T>
-ConstIterator<T> List<T>::GetConstEnd() const
-{
-	return ConstIterator<T>(this, m_pDummyNode);
+	return List<T>::ConstIterator(this, &m_DummyNode);
 }

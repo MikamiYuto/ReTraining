@@ -9,11 +9,26 @@
 
 //----- インクルード
 #include "List.h"
-#include "Iterator.h"
+#include <string>
 
 
-// ハッシュテーブルクラス
-template<class Key, class Value, int(*CalcHashFunc)(Key), int SIZE>
+//----- 定数定義
+constexpr int DEFAULT_HASH_PACKET_SIZE(5);
+
+
+//----- プロトタイプ宣言
+static int CalcHash(const int& key);
+static int CalcHash(const std::string& key);
+
+
+/** 
+ * @brief	ハッシュテーブルクラス 
+ * @param Key			キー値
+ * @param Value			値
+ * @param CalcHashFunc	ハッシュ値導出関数
+ * @param SIZE			パケットサイズ
+ */
+template<class Key, class Value, int(*CalcHashFunc)(const Key&), int SIZE>
 class HashTable
 {
 private:
@@ -30,12 +45,10 @@ private:
 public:
 	/**
 	 * @brief	コンストラクタ
-	 * @details	テンプレート引数で指定されたSIZE分のリストが内部で用意されます
 	 */
 	HashTable();
 	/**
 	 * @brief	デストラクタ
-	 * @details	保持していた要素を解放します
 	 */
 	~HashTable();
 
@@ -49,20 +62,28 @@ public:
 	 * @brief			要素の挿入
 	 * @param[in] key	挿入する要素のキー値
 	 * @param[in] value	挿入する要素の値
-	 * @return			挿入の成否
+	 * @return			挿入の成否、失敗の場合は何もしない
+	 *					失敗ケース
+	 *					・キーの重複
+	 *					・要素のメモリ確保失敗
 	 */
 	bool Insert(const Key& key, const Value& value);
 	/**
 	 * @brief			要素の削除
 	 * @param[in] key	削除する要素のキー値
-	 * @return			削除の成否
+	 * @return			削除の成否、失敗の場合は何もしない
+	 *					失敗ケース
+	 *					・キーが存在しない（削除済、未挿入、空
 	 */
 	bool Erase(const Key& key);
 	/**
 	 * @brief			要素の検索
 	 * @param[in] key	検索する要素のキー値
 	 * @param[out] out	見つかった値の受取先
-	 * @return			検索の成否
+	 * @return			検索の成否、失敗の場合は何もしない
+	 *					失敗ケース
+	 *					・キーが存在しない（削除済、未挿入、空
 	 */
-	bool Find(const Key& key, Value* out);
+	bool Find(const Key& key, Value* out = nullptr) const;
 };
+#include "HashTable.inl"

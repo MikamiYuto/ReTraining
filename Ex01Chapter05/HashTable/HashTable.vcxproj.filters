@@ -26,9 +26,6 @@
     <ClInclude Include="HashTable.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Iterator.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="List.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -37,9 +34,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Iterator.inl">
-      <Filter>ヘッダー ファイル</Filter>
-    </None>
     <None Include="List.inl">
       <Filter>ヘッダー ファイル</Filter>
     </None>
