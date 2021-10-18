@@ -21,7 +21,7 @@ TEST(HashTableClassTest, TestHashTableClass)
 {
 	// 文字列からハッシュ値を導出する関数を渡した場合
 	{
-		HashTable<std::string, int, CalcHash, DEFAULT_HASH_PACKET_SIZE> hashTable;
+		HashTable<std::string, int, CalcHash, DEFAULT_HASH_BUCKET_SIZE> hashTable;
 		const std::string key = "test";
 		const int value = 10;
 		int check = 0;
@@ -33,7 +33,7 @@ TEST(HashTableClassTest, TestHashTableClass)
 	}
 	// 整数からハッシュ値を導出する関数を渡した場合
 	{
-		HashTable<int, int, CalcHash, DEFAULT_HASH_PACKET_SIZE> hashTable;
+		HashTable<int, int, CalcHash, DEFAULT_HASH_BUCKET_SIZE> hashTable;
 		const int key = 100;
 		const int value = 10;
 		int check = 0;
@@ -309,6 +309,8 @@ TEST_F(HashTableFindTest, TestFindExistKeyX2)
 	int check = 0;
 	EXPECT_TRUE(m_HashTable.Find(key, &check));
 	EXPECT_EQ(check, 1);
+	// ２回目のチェック
+	check = 0;
 	EXPECT_TRUE(m_HashTable.Find(key, &check));
 	EXPECT_EQ(check, 1);
 }

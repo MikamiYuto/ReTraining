@@ -20,7 +20,7 @@
 TEST(HashTableManualClassTest, TestClassHashFunc)
 {
 #if defined TEST_CLASS_HASH_FUNC
-	HashTable<float, int, CalcHash, DEFAULT_HASH_PACKET_SIZE> hashTable;
+	HashTable<float, int, CalcHash, DEFAULT_HASH_BUCKET_SIZE> hashTable;
 #endif // TEST_CLASS_HASH_FUNC
 	SUCCEED();
 }

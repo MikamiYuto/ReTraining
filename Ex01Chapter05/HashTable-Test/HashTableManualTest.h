@@ -30,5 +30,5 @@
 class HashTableManualTest : public ::testing::Test
 {
 protected:
-	const HashTable<std::string, int, CalcHash, DEFAULT_HASH_PACKET_SIZE> m_HashTable; //!< コンストハッシュテーブル
+	const HashTable<std::string, int, CalcHash, DEFAULT_HASH_BUCKET_SIZE> m_HashTable; //!< コンストハッシュテーブル
 };

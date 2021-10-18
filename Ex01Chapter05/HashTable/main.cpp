@@ -18,7 +18,7 @@
 
 int main()
 {
-	HashTable<std::string, std::string, CalcHash, DEFAULT_HASH_PACKET_SIZE> hashTable;
+	HashTable<std::string, std::string, CalcHash, DEFAULT_HASH_BUCKET_SIZE> hashTable;
 	List<std::string> keyList;
 	List<std::string>::Iterator itr;
 	std::string key;
@@ -39,7 +39,7 @@ int main()
 	keyList.Insert(itr, "死神を食べた少女");
 	itr = keyList.end();
 	keyList.Insert(itr, "盾の勇者の成り上がり");
-
+	
 	// ハッシュテーブル操作
 	while (isLoop)
 	{
@@ -48,10 +48,10 @@ int main()
 		std::cout << "1 : 登録, 2 : 削除, 3 : 検索, 0 : 終了" << std::endl;
 		std::cout << "操作入力[数値]→";
 		std::cin >> cmdNum;
-
+	
 		// 画面クリア
 		std::system("cls");
-
+	
 		//　キー全表示
 		std::cout << "---↓現在登録されているキー↓---" << std::endl << std::endl;
 		for (const auto& str : keyList)

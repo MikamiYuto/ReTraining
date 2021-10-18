@@ -34,7 +34,7 @@ protected:
 	}
 
 protected:
-	HashTable<std::string, int, CalcHash, DEFAULT_HASH_PACKET_SIZE> m_HashTable;
+	HashTable<std::string, int, CalcHash, DEFAULT_HASH_BUCKET_SIZE> m_HashTable;
 };
 /** データ数取得テスト用 */
 using HashTableGetDataNumTest = HashTableTest;
