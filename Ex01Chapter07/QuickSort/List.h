@@ -209,9 +209,9 @@ private:
 	 */
 	SortNode Partition(bool isAsk, const T& pivot, SortNode L, SortNode R);
 	/**
-	 * @brief	クイックソート、再帰的に呼び出されます
+	 * @brief			クイックソート(再帰
 	 * @param[in] isAsk	整列順の指定(true:昇順、false:降順
-	 * @param[in] pivot 分割する基準値候補
+	 * @param[in] key	分割する基準値候補
 	 * @param[in] L		整列する範囲の先頭ノード
 	 * @param[in] R		整列する範囲の末尾ノード
 	 */
