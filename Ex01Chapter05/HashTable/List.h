@@ -7,7 +7,10 @@
 #pragma once
 
 
- /** 双方向リストクラス */
+ /** 
+ * @brief		双方向リストクラス 
+ * @tparam T	値
+ */
 template<class T>
 class List
 {
@@ -28,8 +31,8 @@ public:
 		friend class List<T>;
 
 	protected:
-		typename const List<T>*	m_pList;		//!< イテレータの参照先リスト
-		typename List<T>::Node* m_pNode;		//!< イテレータが指し示すノード
+		const List<T>*	m_pList;	//!< イテレータの参照先リスト
+		List<T>::Node* m_pNode;		//!< イテレータが指し示すノード
 
 	public:
 		/**
@@ -37,7 +40,7 @@ public:
 		 * @param[in] pList イテレータが参照するリスト
 		 * @param[in] pNode イテレータが指し示す要素
 		 */
-		ConstIterator(typename const List<T>* pList = nullptr, typename List<T>::Node* pNode = nullptr);
+		ConstIterator(const List<T>* pList = nullptr, List<T>::Node* pNode = nullptr);
 		/**
 		 * @brief デストラクタ
 		 */
@@ -48,32 +51,32 @@ public:
 		 * @brief	前置インクリメント演算子のオーバーロード
 		 * @return	ノードを末尾へ一つずらした後のイテレータ
 		 */
-		typename ConstIterator& operator++();
+		ConstIterator& operator++();
 		/**
 		 * @brief	後置インクリメント演算子のオーバーロード
 		 * @return	現在のノードを指すイテレータ
 		 */
-		typename ConstIterator operator++(int);
+		ConstIterator operator++(int);
 		/**
 		 * @brief	前置デクリメント演算子のオーバーロード
 		 * @return	ノードを先頭へ一つずらした後のイテレータ
 		 */
-		typename ConstIterator& operator--();
+		ConstIterator& operator--();
 		/**
 		 * @brief	後置デクリメント演算子のオーバーロード
 		 * @return	現在のノードを指すイテレータ
 		 */
-		typename ConstIterator operator--(int);
+		ConstIterator operator--(int);
 		/**
 		 * @brief	等価演算子のオーバーロード
 		 * @return	等価比較結果
 		 */
-		bool operator==(typename const ConstIterator& itr) const;
+		bool operator==(const ConstIterator& itr) const;
 		/**
 		 * @brief	非等価演算子のオーバーロード
 		 * @return	非等価比較結果
 		 */
-		bool operator!=(typename const ConstIterator& itr) const;
+		bool operator!=(const ConstIterator& itr) const;
 		/**
 		 * @brief	関節演算子のオーバーロード
 		 * @return	イテレータが指す要素の値
@@ -91,7 +94,7 @@ public:
 		 * @param[in] pList イテレータが参照するリスト
 		 * @param[in] pNode イテレータが指し示すノード
 		 */
-		Iterator(typename const List<T>* pList = nullptr, typename List<T>::Node* pNode = nullptr);
+		Iterator(const List<T>* pList = nullptr, List<T>::Node* pNode = nullptr);
 		/**
 		 * @brief デストラクタ
 		 */
@@ -135,7 +138,7 @@ public:
 	 *					・別のリストを参照している
 	 *					・要素のメモリ確保失敗
 	 */
-	bool Insert(typename ConstIterator& itr, const T& value);
+	bool Insert(ConstIterator& itr, const T& value);
 	/**
 	 * @brief			要素の削除
 	 * @param[in] itr	削除位置
@@ -145,26 +148,26 @@ public:
 	 *					・別のリストを参照している
 	 *					・末尾(ダミーノード)を参照している
 	 */
-	bool Erase(typename ConstIterator& itr);
+	bool Erase(ConstIterator& itr);
 	/**
 	 * @brief	先頭ノードを指すイテレータの取得
 	 * @return	先頭イテレータ
 	 */
-	typename Iterator begin();
+	Iterator begin();
 	/**
 	 * @brief	先頭ノードを指すコンストイテレータの取得
 	 * @return	先頭コンストイテレータ
 	 */
-	typename ConstIterator begin() const;
+	ConstIterator begin() const;
 	/**
 	 * @brief	末尾ノード(ダミー)を指すイテレータの取得
 	 * @return	末尾イテレータ
 	 */
-	typename Iterator end();
+	Iterator end();
 	/**
 	 * @brief	末尾ノード(ダミー)を指すコンストイテレータの取得
 	 * @return	末尾コンストイテレータ
 	 */
-	typename ConstIterator end() const;
+	ConstIterator end() const;
 };
 #include "List.inl"

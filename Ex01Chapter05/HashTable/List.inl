@@ -17,7 +17,7 @@
 //=============================================================================
 //-----------------------------------------------------------------------------
 template<class T>
-List<T>::ConstIterator::ConstIterator(typename const List<T>* pList, typename List<T>::Node* pNode)
+List<T>::ConstIterator::ConstIterator(const List<T>* pList, List<T>::Node* pNode)
 	: m_pList(pList)
 	, m_pNode(pNode)
 {
@@ -44,7 +44,7 @@ typename List<T>::ConstIterator List<T>::ConstIterator::operator++(int)
 	assert(m_pList);
 	assert(m_pNode);
 	assert(m_pNode != m_pNode->pBack);
-	typename List<T>::ConstIterator itr = *this;
+	List<T>::ConstIterator itr = *this;
 	m_pNode = m_pNode->pBack;
 	return itr;
 }
@@ -65,19 +65,19 @@ typename List<T>::ConstIterator List<T>::ConstIterator::operator--(int)
 	assert(m_pList);
 	assert(m_pNode);
 	assert(m_pNode != m_pNode->pFront);
-	typename List<T>::ConstIterator itr = *this;
+	List<T>::ConstIterator itr = *this;
 	m_pNode = m_pNode->pFront;
 	return itr;
 }
 //-----------------------------------------------------------------------------
 template<class T>
-bool List<T>::ConstIterator::operator==(typename const ConstIterator& itr) const
+bool List<T>::ConstIterator::operator==(const ConstIterator& itr) const
 {
 	return m_pNode == itr.m_pNode;
 }
 //-----------------------------------------------------------------------------
 template<class T>
-bool List<T>::ConstIterator::operator!=(typename const ConstIterator& itr) const
+bool List<T>::ConstIterator::operator!=(const ConstIterator& itr) const
 {
 	return m_pNode != itr.m_pNode;
 }
@@ -96,7 +96,7 @@ const T& List<T>::ConstIterator::operator*() const
 //=============================================================================
 //-----------------------------------------------------------------------------
 template<class T>
-List<T>::Iterator::Iterator(typename const List<T>* pList, typename List<T>::Node* pNode)
+List<T>::Iterator::Iterator(const List<T>* pList, List<T>::Node* pNode)
 	: ConstIterator(pList, pNode)
 {
 }
@@ -151,7 +151,7 @@ int List<T>::GetCount() const
 }
 //-----------------------------------------------------------------------------
 template<class T>
-bool List<T>::Insert(typename List<T>::ConstIterator& itr, const T& value)
+bool List<T>::Insert(List<T>::ConstIterator& itr, const T& value)
 {
 	// 不正イテレータ(別リスト参照)による挿入失敗
 	if (itr.m_pList != this) return false;
@@ -173,7 +173,7 @@ bool List<T>::Insert(typename List<T>::ConstIterator& itr, const T& value)
 }
 //-----------------------------------------------------------------------------
 template<class T>
-bool List<T>::Erase(typename List<T>::ConstIterator& itr)
+bool List<T>::Erase(List<T>::ConstIterator& itr)
 {
 	// 不正イテレータ(別リスト参照)による削除失敗
 	if (itr.m_pList != this) return false;
