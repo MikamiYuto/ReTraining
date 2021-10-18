@@ -13,7 +13,7 @@
 
 
 //----- 定数定義
-constexpr int DEFAULT_HASH_PACKET_SIZE(5);
+constexpr int DEFAULT_HASH_BUCKET_SIZE(5);
 
 
 //----- プロトタイプ宣言
@@ -23,12 +23,12 @@ static int CalcHash(const std::string& key);
 
 /** 
  * @brief	ハッシュテーブルクラス 
- * @param Key			キー値
- * @param Value			値
- * @param CalcHashFunc	ハッシュ値導出関数
- * @param SIZE			パケットサイズ(ハッシュ関数から導出される値を含めれる値を指定
+ * @tparam Key			キー値
+ * @tparam Value		値
+ * @tparam CalcHashFunc	ハッシュ値導出関数
+ * @tparam SIZE			バケットサイズ
  */
-template<class Key, class Value, int(*CalcHashFunc)(const Key&), int SIZE>
+template<class Key, class Value, int(*CalcHashFunc)(const Key&), int SIZE = DEFAULT_HASH_BUCKET_SIZE>
 class HashTable
 {
 private:
@@ -90,9 +90,8 @@ public:
 
 private:
 	/**
-	 * @brief			キーからハッシュ値が指すリストへの参照を取得する
-	 *					CalcHashFuncとSIZEのいずれかに問題がある場合Assert発生
-	 * @param[in] key	キー値
+	 * @brief			ハッシュ値の取得
+	 * @param[in] key	ハッシュ値を求めるキー
 	 * @return			ハッシュ値
 	 */
 	int GetHash(const Key& key) const;

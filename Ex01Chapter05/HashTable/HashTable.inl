@@ -17,14 +17,14 @@
 //-----------------------------------------------------------------------------
 int CalcHash(const int & key)
 {
-	// キー値をDEFALT_HASH_PACKET_SIZEで割った余りをハッシュとする
-	return key % DEFAULT_HASH_PACKET_SIZE;
+	// キー値をDEFALT_HASH_BUCKET_SIZEで割った余りをハッシュとする
+	return key % DEFAULT_HASH_BUCKET_SIZE;
 }
 //-----------------------------------------------------------------------------
 int CalcHash(const std::string& key)
 {
-	// 文字列の長さをDEFALT_HASH_PACKET_SIZEで割った余りをハッシュとする
-	return key.length() % DEFAULT_HASH_PACKET_SIZE;
+	// 文字列の長さをDEFALT_HASH_BUCKET_SIZEで割った余りをハッシュとする
+	return key.length() % DEFAULT_HASH_BUCKET_SIZE;
 }
 //=============================================================================
 // ハッシュテーブルの実装
@@ -54,8 +54,8 @@ bool HashTable<Key, Value, CalcHashFunc, SIZE>::Insert(const Key& key, const Val
 	// ハッシュ値から格納位置のリストを取得
 	List<Pair>& list = m_Table[GetHash(key)];
 	// キーの重複チェック
-	typename List<Pair>::ConstIterator itr = list.begin();
-	for (typename List<Pair>::ConstIterator e = list.end(); itr != e; ++itr)
+	auto itr = list.begin();
+	for (auto e = list.end(); itr != e; ++itr)
 		if ((*itr).key == key) return false;// 既に挿入予定のキーが存在
 	// 要素挿入
 	if (!list.Insert(itr, Pair{ key,value })) return false;
@@ -71,8 +71,8 @@ bool HashTable<Key, Value, CalcHashFunc, SIZE>::Erase(const Key& key)
 	// ハッシュ値から格納位置のリストを取得
 	List<Pair>& list = m_Table[GetHash(key)];
 	// 削除要素の探索
-	typename List<Pair>::ConstIterator itr = list.begin();
-	for (typename List<Pair>::ConstIterator e = list.end(); itr != e; ++itr)
+	auto itr = list.begin();
+	for (auto e = list.end(); itr != e; ++itr)
 		if ((*itr).key == key) break;
 	// 要素削除
 	if (!list.Erase(itr)) return false;
@@ -88,8 +88,8 @@ bool HashTable<Key, Value, CalcHashFunc, SIZE>::Find(const Key& key, Value* out)
 	// ハッシュ値から格納位置のリストを取得
 	const List<Pair>& list = m_Table[GetHash(key)];
 	// 検索要素の探索
-	typename List<Pair>::ConstIterator itr = list.begin();
-	for (typename List<Pair>::ConstIterator e = list.end(); itr != e; ++itr)
+	auto itr = list.begin();
+	for (auto e = list.end(); itr != e; ++itr)
 		if ((*itr).key == key)
 		{
 			// 要素が持つ値を返却
@@ -100,12 +100,9 @@ bool HashTable<Key, Value, CalcHashFunc, SIZE>::Find(const Key& key, Value* out)
 	return false;// 検索失敗
 }
 //-----------------------------------------------------------------------------
-template<class Key, class Value, int(*CalcHashFunc)(const Key&), int SIZE>
-int HashTable<Key, Value, CalcHashFunc, SIZE>::GetHash(const Key& key) const
+template<class Key, class Value, int(*CalcHashFunc)(const Key &), int SIZE>
+int HashTable<Key, Value, CalcHashFunc, SIZE>::GetHash(const Key & key) const
 {
-	// キーからハッシュ値算出
-	const int hash = CalcHashFunc(key);
-	// ハッシュ値が正常な値の範囲内か
-	assert(0 <= hash && hash < SIZE);
-	return hash;
+	// 算出されたハッシュ値をバケットサイズ内に納めてから返す
+	return CalcHashFunc(key) % SIZE;
 }
