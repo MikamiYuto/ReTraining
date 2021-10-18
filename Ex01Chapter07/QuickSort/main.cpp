@@ -41,6 +41,13 @@ int main()
 	std::cout << "テキストファイル読み込み成功" << std::endl;
 	
 	std::cout << std::endl;
+
+	std::cout << "クイックソート開始" << std::endl;
+	ScoreData key{ 20000, "cmp" };
+	list.QuickSort(true, &key);
+	std::cout << "クイックソート開始" << std::endl << std::endl;
+
+
 	
 	// 読み込んだデータを全表示
 	std::cout << "読み込んだデータの表示開始" << std::endl;

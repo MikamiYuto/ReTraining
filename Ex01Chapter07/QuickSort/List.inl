@@ -2,12 +2,12 @@
  * @file List.inl
  * @brief テンプレート双方向リストクラスの実装ファイル
  * @author MikamiYuto
- * @date 2021.10.11
+ * @date 2021.10.15
  */
 #pragma once
 
 
-//----- インクルード
+ //----- インクルード
 #include "List.h"
 #include <cassert>
 
@@ -17,7 +17,7 @@
 //=============================================================================
 //-----------------------------------------------------------------------------
 template<class T>
-List<T>::ConstIterator::ConstIterator(typename const List<T>* pList, typename List<T>::Node* pNode)
+List<T>::ConstIterator::ConstIterator(const List<T>* pList, List<T>::Node* pNode)
 	: m_pList(pList)
 	, m_pNode(pNode)
 {
@@ -44,7 +44,7 @@ typename List<T>::ConstIterator List<T>::ConstIterator::operator++(int)
 	assert(m_pList);
 	assert(m_pNode);
 	assert(m_pNode != m_pNode->pBack);
-	typename List<T>::ConstIterator itr = *this;
+	List<T>::ConstIterator itr = *this;
 	m_pNode = m_pNode->pBack;
 	return itr;
 }
@@ -65,19 +65,19 @@ typename List<T>::ConstIterator List<T>::ConstIterator::operator--(int)
 	assert(m_pList);
 	assert(m_pNode);
 	assert(m_pNode != m_pNode->pFront);
-	typename List<T>::ConstIterator itr = *this;
+	List<T>::ConstIterator itr = *this;
 	m_pNode = m_pNode->pFront;
 	return itr;
 }
 //-----------------------------------------------------------------------------
 template<class T>
-bool List<T>::ConstIterator::operator==(typename const ConstIterator& itr) const
+bool List<T>::ConstIterator::operator==(const ConstIterator& itr) const
 {
 	return m_pNode == itr.m_pNode;
 }
 //-----------------------------------------------------------------------------
 template<class T>
-bool List<T>::ConstIterator::operator!=(typename const ConstIterator& itr) const
+bool List<T>::ConstIterator::operator!=(const ConstIterator& itr) const
 {
 	return m_pNode != itr.m_pNode;
 }
@@ -96,7 +96,7 @@ const T& List<T>::ConstIterator::operator*() const
 //=============================================================================
 //-----------------------------------------------------------------------------
 template<class T>
-List<T>::Iterator::Iterator(typename const List<T>* pList, typename List<T>::Node* pNode)
+List<T>::Iterator::Iterator(const List<T>* pList, List<T>::Node* pNode)
 	: ConstIterator(pList, pNode)
 {
 }
@@ -151,7 +151,7 @@ int List<T>::GetCount() const
 }
 //-----------------------------------------------------------------------------
 template<class T>
-bool List<T>::Insert(typename List<T>::ConstIterator& itr, const T& value)
+bool List<T>::Insert(List<T>::ConstIterator& itr, const T& value)
 {
 	// 不正イテレータ(別リスト参照)による挿入失敗
 	if (itr.m_pList != this) return false;
@@ -173,7 +173,7 @@ bool List<T>::Insert(typename List<T>::ConstIterator& itr, const T& value)
 }
 //-----------------------------------------------------------------------------
 template<class T>
-bool List<T>::Erase(typename List<T>::ConstIterator& itr)
+bool List<T>::Erase(List<T>::ConstIterator& itr)
 {
 	// 不正イテレータ(別リスト参照)による削除失敗
 	if (itr.m_pList != this) return false;
@@ -218,7 +218,93 @@ typename List<T>::ConstIterator List<T>::end() const
 	return List<T>::ConstIterator(this, m_pDummyNode);
 }
 //-----------------------------------------------------------------------------
+//=============================================================================
+// クイックソート参考URL
+// https://cod-aid.com/library-quick-sort ←基本的なアルゴリズムを参考
+// https://bi.biopapyrus.jp/cpp/algorithm/sort/quick-sort.html ←Partition辺りを参考
+// https://ufcpp.net/study/algorithm/sort_quick.html ←中央値辺りを参考
+//-----------------------------------------------------------------------------
 template<class T>
 void List<T>::QuickSort(bool isAsk, const T* pKey)
 {
+	// キーが設定されていなければ何もしない
+	if (!pKey) return;
+	// 要素が空、または1つだけなら即リターン 
+	if (m_pDummyNode->pBack == m_pDummyNode->pFront) return;
+
+	// 始めの整列区間を設定(ダミーを除く全要素
+	SortNode l = { m_pDummyNode->pBack, 0 };
+	SortNode r = { m_pDummyNode->pFront, m_ElementCnt - 1 };
+	// 再帰開始
+	QuickSort(isAsk, *pKey, l, r);
+}
+//-----------------------------------------------------------------------------
+template<class T>
+void List<T>::Swap(typename Node* pA, typename Node* pB)
+{
+	T temp = std::move(pA->data);
+	pA->data = std::move(pB->data);
+	pB->data = std::move(temp);
+}
+//-----------------------------------------------------------------------------
+template<class T>
+const T& List<T>::Median(const T& a, const T& b, const T& c) const
+{
+	// 3つの値の中から中央の値を求める
+	if (a < b && b < c || c < b && b < a)
+		 return b;
+	else if (b < a && a < c || c < a && a < b)
+		return a;
+	else
+		return c;
+}
+//-----------------------------------------------------------------------------
+template<class T>
+typename List<T>::SortNode List<T>::Partition(bool isAsk, const T& pivot, typename SortNode L, typename SortNode R)
+{
+	// 基準値を元に大小へ分割する
+	while (true)
+	{
+		if (isAsk)
+		{// 昇順
+			while (L.pNode->data < pivot) { ++L.elem; L.pNode = L.pNode->pBack; }
+			while (R.pNode->data > pivot) { --R.elem; R.pNode = R.pNode->pFront; }
+		}
+		else
+		{// 降順
+			while (L.pNode->data > pivot) { ++L.elem; L.pNode = L.pNode->pBack; }
+			while (R.pNode->data < pivot) { --R.elem; R.pNode = R.pNode->pFront; }
+		}
+		// 走査しているノードが交差したら終了
+		if (L.elem >= R.elem) break;
+
+		// 値交換
+		Swap(L.pNode, R.pNode);
+		
+		// 次の要素から走査を始める
+		++L.elem; L.pNode = L.pNode->pBack;
+		--R.elem; R.pNode = R.pNode->pFront;
+	}
+
+	// 分割地点のノードを返却
+	return L;
+}
+//-----------------------------------------------------------------------------
+template<class T>
+void List<T>::QuickSort(bool isAsk, const T& key, typename SortNode L, typename SortNode R)
+{
+	// 整列に用いる基準値を引数からの候補、整列区間の先頭、末尾の値から選定(最悪計算量を避けるための処理
+	const T& pivot = Median(key, L.pNode->data, R.pNode->data);
+	// 基準値を元に整列区間のリスト要素を大小に分割
+	SortNode m = Partition(isAsk, L.pNode->data, L, R);
+	// 次の整列区間の設定
+	SortNode mL, mR;
+	mL = mR = m;
+	mL.pNode = mL.pNode->pFront;
+	--mL.elem;
+	mR.pNode = mR.pNode->pBack;
+	++mR.elem;
+	// 再帰的に処理
+	if (L.elem < mL.elem) QuickSort(isAsk, pivot ,L, mL);
+	if (R.elem > mR.elem) QuickSort(isAsk, pivot ,mR, R);
 }

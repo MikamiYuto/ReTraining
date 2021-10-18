@@ -2,12 +2,15 @@
  * @file List.h
  * @brief テンプレート双方向リストクラスの定義ファイル
  * @author MikamiYuto
- * @date 2021.10.08
+ * @date 2021.10.15
  */
 #pragma once
 
 
- /** 双方向リストクラス */
+ /**
+  * @brief		双方向リストクラス
+  * @tparam T	値
+  */
 template<class T>
 class List
 {
@@ -20,6 +23,14 @@ private:
 		T			data;	//!< 値を保持
 	};
 
+private:
+	/** ソート用ノード */
+	struct SortNode
+	{
+		Node*	pNode;	//!< 対象のノード
+		int		elem;	//!< 先頭から何番目の要素か
+	};
+
 public:
 	/** コンストイテレータクラス */
 	class ConstIterator
@@ -28,8 +39,8 @@ public:
 		friend class List<T>;
 
 	protected:
-		typename const List<T>*	m_pList;		//!< イテレータの参照先リスト
-		typename List<T>::Node* m_pNode;		//!< イテレータが指し示すノード
+		const List<T>*	m_pList;	//!< イテレータの参照先リスト
+		List<T>::Node* m_pNode;		//!< イテレータが指し示すノード
 
 	public:
 		/**
@@ -37,43 +48,43 @@ public:
 		 * @param[in] pList イテレータが参照するリスト
 		 * @param[in] pNode イテレータが指し示す要素
 		 */
-		ConstIterator(typename const List<T>* pList = nullptr, typename List<T>::Node* pNode = nullptr);
+		ConstIterator(const List<T>* pList = nullptr, List<T>::Node* pNode = nullptr);
 		/**
 		 * @brief デストラクタ
 		 */
 		virtual ~ConstIterator();
-	
+
 	public:
 		/**
 		 * @brief	前置インクリメント演算子のオーバーロード
 		 * @return	ノードを末尾へ一つずらした後のイテレータ
 		 */
-		typename ConstIterator& operator++();
+		ConstIterator& operator++();
 		/**
 		 * @brief	後置インクリメント演算子のオーバーロード
 		 * @return	現在のノードを指すイテレータ
 		 */
-		typename ConstIterator operator++(int);
+		ConstIterator operator++(int);
 		/**
 		 * @brief	前置デクリメント演算子のオーバーロード
 		 * @return	ノードを先頭へ一つずらした後のイテレータ
 		 */
-		typename ConstIterator& operator--();
+		ConstIterator& operator--();
 		/**
 		 * @brief	後置デクリメント演算子のオーバーロード
 		 * @return	現在のノードを指すイテレータ
 		 */
-		typename ConstIterator operator--(int);
+		ConstIterator operator--(int);
 		/**
 		 * @brief	等価演算子のオーバーロード
 		 * @return	等価比較結果
 		 */
-		bool operator==(typename const ConstIterator& itr) const;
+		bool operator==(const ConstIterator& itr) const;
 		/**
 		 * @brief	非等価演算子のオーバーロード
 		 * @return	非等価比較結果
 		 */
-		bool operator!=(typename const ConstIterator& itr) const;
+		bool operator!=(const ConstIterator& itr) const;
 		/**
 		 * @brief	関節演算子のオーバーロード
 		 * @return	イテレータが指す要素の値
@@ -91,12 +102,12 @@ public:
 		 * @param[in] pList イテレータが参照するリスト
 		 * @param[in] pNode イテレータが指し示すノード
 		 */
-		Iterator(typename const List<T>* pList = nullptr, typename List<T>::Node* pNode = nullptr);
+		Iterator(const List<T>* pList = nullptr, List<T>::Node* pNode = nullptr);
 		/**
 		 * @brief デストラクタ
 		 */
 		~Iterator();
-	
+
 	public:
 		/**
 		 * @brief	関節演算子のオーバーロード
@@ -135,7 +146,7 @@ public:
 	 *					・別のリストを参照している
 	 *					・要素のメモリ確保失敗
 	 */
-	bool Insert(typename ConstIterator& itr, const T& value);
+	bool Insert(ConstIterator& itr, const T& value);
 	/**
 	 * @brief			要素の削除
 	 * @param[in] itr	削除位置
@@ -145,32 +156,65 @@ public:
 	 *					・別のリストを参照している
 	 *					・末尾(ダミーノード)を参照している
 	 */
-	bool Erase(typename ConstIterator& itr);
+	bool Erase(ConstIterator& itr);
 	/**
 	 * @brief	先頭ノードを指すイテレータの取得
 	 * @return	先頭イテレータ
 	 */
-	typename Iterator begin();
+	Iterator begin();
 	/**
 	 * @brief	先頭ノードを指すコンストイテレータの取得
 	 * @return	先頭コンストイテレータ
 	 */
-	typename ConstIterator begin() const;
+	ConstIterator begin() const;
 	/**
 	 * @brief	末尾ノード(ダミー)を指すイテレータの取得
 	 * @return	末尾イテレータ
 	 */
-	typename Iterator end();
+	Iterator end();
 	/**
 	 * @brief	末尾ノード(ダミー)を指すコンストイテレータの取得
 	 * @return	末尾コンストイテレータ
 	 */
-	typename ConstIterator end() const;
+	ConstIterator end() const;
 	/**
-	 * @brief			要素の整列
+	 * @brief			クイックソート
 	 * @param[in] isAsk 整列順の指定(true:昇順、false:降順
-	 * @param[in] pKey	整列の基準となるデータ
+	 * @param[in] pKey	整列の基準となる値候補、nullptrの場合は何もしない
 	 */
 	void QuickSort(bool isAsk, const T* pKey = nullptr);
+
+private:
+	/**
+	 * @brief			要素の交換
+	 * @param[in] pA	交換するノードその１
+	 * @param[in] pB	交換するノードその２
+	 */
+	void Swap(Node* pA, Node* pB);
+	/**
+	 * @brief		中央値の取得
+	 * @param[in] a 比べる値その１
+	 * @param[in] b 比べる値その２
+	 * @param[in] c 比べる値その３
+	 * @return		引数の中央値
+	 */
+	const T& Median(const T& a, const T&b, const T&c) const;
+	/**
+	 * @brief			要素を大小に分割(整列)する
+	 * @param[in] isAsk 整列順の指定(true:昇順、false:降順
+	 * @param[in] pivot 分割する基準値
+	 * @param[in] L		整列する範囲の先頭ノード
+	 * @param[in] R		整列する範囲の末尾ノード
+	 * @return			大小の境目になるノード
+	 */
+	SortNode Partition(bool isAsk, const T& pivot, SortNode L, SortNode R);
+	/**
+	 * @brief	クイックソート、再帰的に呼び出されます
+	 * @param[in] isAsk	整列順の指定(true:昇順、false:降順
+	 * @param[in] pivot 分割する基準値候補
+	 * @param[in] L		整列する範囲の先頭ノード
+	 * @param[in] R		整列する範囲の末尾ノード
+	 */
+	void QuickSort(bool isAsk, const T& key, SortNode L, SortNode R);
 };
 #include "List.inl"

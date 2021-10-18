@@ -98,7 +98,7 @@ TEST_P(ListQuickSortTest, TestListQuickSortAfterSort)
 	const int* pExpected = isAsk ? expectedAsk : expectedDesk;
 	for (const auto& data : m_List)
 	{
-		ASSERT_TRUE(m_List.Insert(m_List.begin(), data));
+		ASSERT_TRUE(m_List.Insert(m_List.end(), data));
 		++pExpected;
 	}
 	// 整列処理実行
@@ -123,11 +123,8 @@ TEST_P(ListQuickSortTest, TestListQuickSortAfterSortInsert)
 	const int setupAsk[] = { 0, 10, 100 };
 	const int setupDesk[] = { 100, 10, 0 };
 	const int* pSetup = isAsk ? setupAsk : setupDesk;
-	for (const auto& data : m_List)
-	{
-		ASSERT_TRUE(m_List.Insert(m_List.begin(), data));
-		++pSetup;
-	}
+	for (int i = 0; i < 3; ++i, ++pSetup)
+		ASSERT_TRUE(m_List.Insert(m_List.end(), *pSetup));
 	// 整列済リストの各所に要素を挿入
 	const int insertDatas[] = { 50, 5, 500 };
 	for (int i = 0; i < 3; ++i)
@@ -156,7 +153,7 @@ TEST_P(ListQuickSortTest, TestListQuickSortNullPtrKey)
 {
 	const int expected[] = { 1, 0, 2 };
 	for (int i = 0; i < 3; ++i)
-		ASSERT_TRUE(m_List.Insert(m_List.begin(), expected[i]));
+		ASSERT_TRUE(m_List.Insert(m_List.end(), expected[i]));
 	// 整列処理実行
 	m_List.QuickSort(GetParam(), nullptr);
 	// 変に整列がかけられていないかチェック

@@ -16,3 +16,18 @@ bool ScoreData::operator==(const ScoreData& data) const
 {
 	return score == data.score && userName == data.userName;
 }
+//-----------------------------------------------------------------------------
+bool ScoreData::operator<(const ScoreData& data) const
+{
+	return score < data.score;
+}
+//-----------------------------------------------------------------------------
+bool ScoreData::operator>(const ScoreData& data) const
+{
+	return score > data.score;
+}
+//-----------------------------------------------------------------------------
+bool ScoreData::operator<=(const ScoreData& data) const
+{
+	return score <= data.score;
+}
