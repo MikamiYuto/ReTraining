@@ -9,7 +9,8 @@
 #include <stdio.h>
 #include <functions.h>
 #include <crtdbg.h>
-#include <future>
+#include <thread>
+#include <vector>
 
 //-----------------------------------------------------------------------------
 // Macro Definitions
@@ -17,8 +18,11 @@
 
 #define N		100000
 #define	MIN		1
-#define	MAX		9
-#define RESULT	5651388		// この計算はこの値になります
+#define	MAX		13
+#define RESULT	833197		// この計算はこの値になります
+
+//#define SINGLE
+#define MULTI
 
 //-----------------------------------------------------------------------------
 // Using Namespace
@@ -39,15 +43,36 @@ namespace ex02_MultiThread
 		*//***************************************************************************/
 		int DoWork()
 		{
+			// 1.生成されたパラメタを貯めるコンテナを用意
+			struct Param
+			{
+				int x, y, z;
+			};
+			std::vector<Param> params(N);
 			int sum = 0;
 
-			for( int i = 0; i < N; i++ )
+			// 2.Tarai計算のパラメタ生成処理
+			for( int i = 0; i < N; ++i )
 			{
-				int x = Random( MIN, MAX );
-				int y = Random( MIN, MAX );
-				int z = Random( MIN, MAX );
-				sum += Tarai(x, y, z);
+				params[i].x = Random( MIN, MAX );
+				params[i].y = Random( MIN, MAX );
+				params[i].z = Random( MIN, MAX );
 			}
+
+			// 3.Tarai計算の実行処理
+#if defined SINGLE
+			for (int i = 0; i < N; ++i)
+				sum += Tarai(params[i].x, params[i].y, params[i].z);
+#elif defined MULTI
+			// テスト中コード、sumがおかしくなる
+			//std::unique_ptr<std::thread> ths[10];
+			//for (int i = 0; i < 10; ++i)
+			//	ths[i].reset(new std::thread([&sum, &params, &i] { for (int j = i * 10000; j < N; ++j) sum += Tarai(params[j].x, params[j].y, params[j].z); }));
+			//for (auto& th : ths)
+			//	th->join();
+			std::thread th([&sum, &params] { for (int i = 0; i < N; ++i) sum += Tarai(params[i].x, params[i].y, params[i].z); });
+			th.join();
+#endif
 
 			return sum;
 		}
