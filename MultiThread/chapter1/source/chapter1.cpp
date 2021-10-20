@@ -21,7 +21,6 @@
 #define	MIN		1
 #define	MAX		13
 #define RESULT	833197		// この計算はこの値になります
-std::mutex mtx;
 
 //-----------------------------------------------------------------------------
 // Using Namespace
@@ -42,25 +41,31 @@ namespace ex02_MultiThread
 		*//***************************************************************************/
 		int DoWork()
 		{
+			// パラメタ定義
 			struct Param { int x, y, z; };
 			int sum = 0;
+			// パラメタを蓄えるコンテナとスレッドを用意
 			std::vector<Param> params;
 			std::vector<std::thread> ths;
 			params.reserve(N);
 			ths.reserve(std::thread::hardware_concurrency());
-			auto spawnParamFunc = [&params]
+			// 排他制御用
+			std::mutex mtx;
+			// パラメタ生成関数
+			auto spawnParamFunc = [&params, &mtx]
 			{
 				std::lock_guard<std::mutex> lock(mtx);
 				Param param{ Random(MIN, MAX), Random(MIN, MAX), Random(MIN, MAX) };
 				params.emplace_back(param);
 				return param;
 			};
-			auto addFunc = [&sum](int add)
+			// 合算関数
+			auto addFunc = [&sum, &mtx](int add)
 			{
 				std::lock_guard<std::mutex> lock(mtx);
 				sum += add;
 			};
-
+			// 並列用にスレッド生成
 			for (int i = 0; i < 10; ++i)
 			{
 				ths.emplace_back(std::thread([&spawnParamFunc, &addFunc, &params]
@@ -72,6 +77,7 @@ namespace ex02_MultiThread
 					}
 				}));
 			}
+			// 処理待ち
 			for (auto& th : ths)
 				th.join();
 
