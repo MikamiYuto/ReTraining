@@ -11,6 +11,7 @@
 #include <crtdbg.h>
 #include <thread>
 #include <vector>
+#include <mutex>
 
 //-----------------------------------------------------------------------------
 // Macro Definitions
@@ -65,13 +66,15 @@ namespace ex02_MultiThread
 				sum += Tarai(params[i].x, params[i].y, params[i].z);
 #elif defined MULTI
 			// テスト中コード、sumがおかしくなる
-			//std::unique_ptr<std::thread> ths[10];
-			//for (int i = 0; i < 10; ++i)
-			//	ths[i].reset(new std::thread([&sum, &params, &i] { for (int j = i * 10000; j < N; ++j) sum += Tarai(params[j].x, params[j].y, params[j].z); }));
-			//for (auto& th : ths)
-			//	th->join();
-			std::thread th([&sum, &params] { for (int i = 0; i < N; ++i) sum += Tarai(params[i].x, params[i].y, params[i].z); });
-			th.join();
+			std::mutex mtx = {};
+			auto addFp = [&sum,&mtx](int add) { mtx.lock(); sum += add; mtx.unlock(); };
+			std::unique_ptr<std::thread> ths[10];
+			for (int i = 0; i < 10; ++i)
+				ths[i].reset(new std::thread([&params, &i, &addFp] { for (int j = i * 10000; j < N; ++j) addFp(Tarai(params[j].x, params[j].y, params[j].z)); }));
+			for (auto& th : ths)
+				th->join();
+			//std::thread th([&params, &addFp] { for (int i = 0; i < N; ++i) addFp(Tarai(params[i].x, params[i].y, params[i].z)); });
+			//th.join();
 #endif
 
 			return sum;

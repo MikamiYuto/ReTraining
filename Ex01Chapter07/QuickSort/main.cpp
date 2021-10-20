@@ -43,9 +43,9 @@ int main()
 	std::cout << std::endl;
 
 	std::cout << "クイックソート開始" << std::endl;
-	ScoreData key{ 20000, "cmp" };
-	list.QuickSort(true, &key);
-	std::cout << "クイックソート開始" << std::endl << std::endl;
+	auto cmpFunc = [](bool isAsk, const ScoreData& a, const ScoreData&b) { return isAsk ? a.score < b.score : a.score > b.score; };
+	list.QuickSort(true, cmpFunc);
+	std::cout << "クイックソート終了" << std::endl << std::endl;
 
 
 	

@@ -41,6 +41,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\QuickSort\List.h" />
     <ClInclude Include="QuickSortTest.h" />
   </ItemGroup>
   <ItemGroup>

@@ -21,8 +21,7 @@ INSTANTIATE_TEST_CASE_P(TestListQuickSort, ListQuickSortTest, testing::Bool());
  */
 TEST_P(ListQuickSortTest, TestListQuickSortWhenEmpty)
 {
-	const int key = 1;
-	m_List.QuickSort(GetParam(), &key);
+	m_List.QuickSort(GetParam(), m_CmpFunc);
 }
 /**
  * @brief	要素を1つだけ持つリストにソートを実行した時の挙動テスト
@@ -30,9 +29,8 @@ TEST_P(ListQuickSortTest, TestListQuickSortWhenEmpty)
  */
 TEST_P(ListQuickSortTest, TestListQuickSortWhenOnly)
 {
-	const int key = 1;
 	m_List.Insert(m_List.begin(), 1);
-	m_List.QuickSort(GetParam(), &key);
+	m_List.QuickSort(GetParam(), m_CmpFunc);
 }
 /**
  * @brief	2つ以上の要素を持つリストにソートを実行した時の挙動テスト
@@ -41,14 +39,13 @@ TEST_P(ListQuickSortTest, TestListQuickSortWhenOnly)
 TEST_P(ListQuickSortTest, TestListQuickSort)
 {
 	const bool isAsk = GetParam();
-	const int key = 1;
 
 	// 複数要素がある未整列のリストを用意
 	const int setupDatas[] = { 0, 2, 1 };
 	for (const auto& data : setupDatas)
 		ASSERT_TRUE(m_List.Insert(m_List.end(), data));
 	// 整列処理実行
-	m_List.QuickSort(isAsk, &key);
+	m_List.QuickSort(isAsk, m_CmpFunc);
 	// 正しく整列されているかチェック
 	const int expectedAsk[] = { 0, 1, 2 };
 	const int expectedDesk[] = { 2, 1, 0 };
@@ -66,14 +63,13 @@ TEST_P(ListQuickSortTest, TestListQuickSort)
 TEST_P(ListQuickSortTest, TestListQuickSortDupKey)
 {
 	const bool isAsk = GetParam();
-	const int key = 1;
 
 	// 重複したキーがある複数要素の未整列リストを用意
 	const int setupDatas[] = { 0, 2, 1, 1 };
 	for (const auto& data : setupDatas)
 		ASSERT_TRUE(m_List.Insert(m_List.end(), data));
 	// 整列処理実行
-	m_List.QuickSort(isAsk, &key);
+	m_List.QuickSort(isAsk, m_CmpFunc);
 	// 正しく整列されているかチェック
 	const int expectedAsk[] = { 0, 1, 1, 2 };
 	const int expectedDesk[] = { 2, 1, 1, 0 };
@@ -90,7 +86,6 @@ TEST_P(ListQuickSortTest, TestListQuickSortDupKey)
  */
 TEST_P(ListQuickSortTest, TestListQuickSortAfterSort)
 {
-	const int key = 1;
 	const bool isAsk = GetParam();
 	// 整列済リストを用意
 	const int expectedAsk[] = { 0, 1, 2 };
@@ -102,7 +97,7 @@ TEST_P(ListQuickSortTest, TestListQuickSortAfterSort)
 		++pExpected;
 	}
 	// 整列処理実行
-	m_List.QuickSort(isAsk, &key);
+	m_List.QuickSort(isAsk, m_CmpFunc);
 	// 順番が変動していないかチェック
 	pExpected = isAsk ? expectedAsk : expectedDesk;
 	for (const auto& data : m_List)
@@ -117,7 +112,6 @@ TEST_P(ListQuickSortTest, TestListQuickSortAfterSort)
  */
 TEST_P(ListQuickSortTest, TestListQuickSortAfterSortInsert)
 {
-	const int key = 1;
 	const bool isAsk = GetParam();
 	// 整列済リストを用意
 	const int setupAsk[] = { 0, 10, 100 };
@@ -134,7 +128,7 @@ TEST_P(ListQuickSortTest, TestListQuickSortAfterSortInsert)
 		ASSERT_TRUE(m_List.Insert(itr, insertDatas[i]));
 	}
 	// 整列処理実行
-	m_List.QuickSort(isAsk, &key);
+	m_List.QuickSort(isAsk, m_CmpFunc);
 	// 正しく整列されているかチェック
 	const int expectedAsk[] = { 0, 5, 10, 50, 100, 500 };
 	const int expectedDesk[] = { 500, 100, 50, 10, 5, 0 };
@@ -174,8 +168,8 @@ TEST(ListQuickSortManualTest, TestListQuickSortNotExpectedKey)
 {
 #if defined TEST_QUICKSORT_NOT_EXPECTED_KEY
 	List<int> list;
-	const float key = 1.f;
-	list.QuickSort(true, &key);// ここでエラー
+	auto cmpFunc = [](bool isAsk, const float& a, const float& b) { return isAsk ? a < b : a > b; };
+	list.QuickSort(true, cmpFunc);// ここでエラー
 #endif // TEST_QUICKSORT_NOT_EXPECTED_KEY
 	SUCCEED();
 }
@@ -187,8 +181,8 @@ TEST(ListQuickSortManualTest, TestListQuickSortIsConst)
 {
 #if defined TEST_QUICKSORT_IS_CONST
 	const List<int> list;
-	const int key = 1;
-	list.QuickSort(true, &key);// ここでエラー
+	auto cmpFunc = [](bool isAsk, const int& a, const int& b) { return isAsk ? a < b : a > b; };
+	list.QuickSort(true, cmpFunc);// ここでエラー
 #endif // TEST_QUICKSORT_IS_CONST
 	SUCCEED();
 }

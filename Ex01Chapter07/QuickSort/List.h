@@ -23,14 +23,6 @@ private:
 		T			data;	//!< 値を保持
 	};
 
-private:
-	/** ソート用ノード */
-	struct SortNode
-	{
-		Node*	pNode;	//!< 対象のノード
-		int		elem;	//!< 先頭から何番目の要素か
-	};
-
 public:
 	/** コンストイテレータクラス */
 	class ConstIterator
@@ -117,6 +109,9 @@ public:
 	};
 
 private:
+	using CmpDataFunc = bool(*)(bool, const T&, const T&);
+
+private:
 	Node*	m_pDummyNode;	//!< ダミーノード
 	int		m_ElementCnt;	//!< 要素数（ダミーは未カウント
 
@@ -178,11 +173,11 @@ public:
 	 */
 	ConstIterator end() const;
 	/**
-	 * @brief			クイックソート
-	 * @param[in] isAsk 整列順の指定(true:昇順、false:降順
-	 * @param[in] pKey	整列の基準となる値候補、nullptrの場合は何もしない
+	 * @brief				クイックソート
+	 * @param[in] isAsk		整列順の指定(true:昇順、false:降順
+	 * @param[in] cmpFunc	要素比較関数、nullptrの場合は何もしない
 	 */
-	void QuickSort(bool isAsk, const T* pKey = nullptr);
+	void QuickSort(bool isAsk, CmpDataFunc cmpFunc);
 
 private:
 	/**
@@ -200,21 +195,23 @@ private:
 	 */
 	const T& Median(const T& a, const T&b, const T&c) const;
 	/**
-	 * @brief			要素を大小に分割(整列)する
-	 * @param[in] isAsk 整列順の指定(true:昇順、false:降順
-	 * @param[in] pivot 分割する基準値
-	 * @param[in] L		整列する範囲の先頭ノード
-	 * @param[in] R		整列する範囲の末尾ノード
-	 * @return			大小の境目になるノード
+	 * @brief				要素を大小に分割(整列)する
+	 * @param[in] isAsk		整列順の指定(true:昇順、false:降順
+	 * @param[in] cmpFunc	要素比較関数
+	 * @param[in] pivot		分割する基準値
+	 * @param[in] L			整列する範囲の先頭ノード
+	 * @param[in] R			整列する範囲の末尾ノード
+	 * @param[out] 	ML		受取用、大小に整列した区間の境目になる先頭側ノード
+	 * @param[out] 	MR		受取用、大小に整列した区間の境目になる末尾側ノード
 	 */
-	SortNode Partition(bool isAsk, const T& pivot, SortNode L, SortNode R);
+	void Partition(bool isAsk, CmpDataFunc cmpFunc, const T& pivot, Node* L, Node* R, Node*& ML, Node*& MR);
 	/**
-	 * @brief			クイックソート(再帰
-	 * @param[in] isAsk	整列順の指定(true:昇順、false:降順
-	 * @param[in] key	分割する基準値候補
-	 * @param[in] L		整列する範囲の先頭ノード
-	 * @param[in] R		整列する範囲の末尾ノード
+	 * @brief				クイックソート(再帰
+	 * @param[in] isAsk		整列順の指定(true:昇順、false:降順
+	 * @param[in] cmpFunc	要素比較関数
+	 * @param[in] L			整列する範囲の先頭ノード
+	 * @param[in] R			整列する範囲の末尾ノード
 	 */
-	void QuickSort(bool isAsk, const T& key, SortNode L, SortNode R);
+	void QuickSort(bool isAsk, CmpDataFunc cmpFunc, Node* L, Node* R);
 };
 #include "List.inl"

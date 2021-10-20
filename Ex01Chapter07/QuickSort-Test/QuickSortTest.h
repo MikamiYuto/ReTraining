@@ -26,5 +26,13 @@
 class ListQuickSortTest : public ::testing::TestWithParam<bool>
 {
 protected:
+	virtual void SetUp()
+	{
+		m_CmpFunc = [](bool isAsk, const int& a, const int& b) { return isAsk ? a < b : a > b; };
+	}
+
+
+protected:
 	List<int> m_List;
+	bool(*m_CmpFunc)(bool, const int&, const int&);
 };
