@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <functions.h>
 #include <crtdbg.h>
-#include <thread>
 #include <vector>
+#include <thread>
 #include <mutex>
 
 //-----------------------------------------------------------------------------
@@ -21,9 +21,7 @@
 #define	MIN		1
 #define	MAX		13
 #define RESULT	833197		// この計算はこの値になります
-
-//#define SINGLE
-#define MULTI
+std::mutex mtx;
 
 //-----------------------------------------------------------------------------
 // Using Namespace
@@ -44,38 +42,38 @@ namespace ex02_MultiThread
 		*//***************************************************************************/
 		int DoWork()
 		{
-			// 1.生成されたパラメタを貯めるコンテナを用意
-			struct Param
-			{
-				int x, y, z;
-			};
-			std::vector<Param> params(N);
+			struct Param { int x, y, z; };
 			int sum = 0;
-
-			// 2.Tarai計算のパラメタ生成処理
-			for( int i = 0; i < N; ++i )
+			std::vector<Param> params;
+			std::vector<std::thread> ths;
+			params.reserve(N);
+			ths.reserve(std::thread::hardware_concurrency());
+			auto spawnParamFunc = [&params]
 			{
-				params[i].x = Random( MIN, MAX );
-				params[i].y = Random( MIN, MAX );
-				params[i].z = Random( MIN, MAX );
-			}
+				std::lock_guard<std::mutex> lock(mtx);
+				Param param{ Random(MIN, MAX), Random(MIN, MAX), Random(MIN, MAX) };
+				params.emplace_back(param);
+				return param;
+			};
+			auto addFunc = [&sum](int add)
+			{
+				std::lock_guard<std::mutex> lock(mtx);
+				sum += add;
+			};
 
-			// 3.Tarai計算の実行処理
-#if defined SINGLE
-			for (int i = 0; i < N; ++i)
-				sum += Tarai(params[i].x, params[i].y, params[i].z);
-#elif defined MULTI
-			// テスト中コード、sumがおかしくなる
-			std::mutex mtx = {};
-			auto addFp = [&sum,&mtx](int add) { mtx.lock(); sum += add; mtx.unlock(); };
-			std::unique_ptr<std::thread> ths[10];
 			for (int i = 0; i < 10; ++i)
-				ths[i].reset(new std::thread([&params, &i, &addFp] { for (int j = i * 10000; j < N; ++j) addFp(Tarai(params[j].x, params[j].y, params[j].z)); }));
+			{
+				ths.emplace_back(std::thread([&spawnParamFunc, &addFunc, &params]
+				{
+					for (int i = 0; i < 10000; ++i)
+					{
+						Param param = spawnParamFunc();
+						addFunc(Tarai(param.x, param.y, param.z));
+					}
+				}));
+			}
 			for (auto& th : ths)
-				th->join();
-			//std::thread th([&params, &addFp] { for (int i = 0; i < N; ++i) addFp(Tarai(params[i].x, params[i].y, params[i].z)); });
-			//th.join();
-#endif
+				th.join();
 
 			return sum;
 		}
