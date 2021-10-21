@@ -23,6 +23,21 @@ int main()
 	std::ifstream ifs("scores.txt");
 	if (!ifs) return -1;
 	ScoreData data = {};
+	// データ表示関数
+	auto showDataFunc = [&list]
+	{
+		std::cout << "全データの表示開始" << std::endl;
+		for (const auto& data : list)
+			std::cout << "Score: " << std::setw(5) << data.score << " --- UserName: " << data.userName << std::endl;
+		std::cout << "全データの表示終了" << std::endl;
+	};
+	// ソート表示関数
+	auto showSortFunc = [&list](bool(*cmpFunc)(const ScoreData&, const ScoreData&), std::string keyName)
+	{
+		std::cout << keyName << "をキーとしたクイックソート開始" << std::endl;
+		list.QuickSort(cmpFunc);
+		std::cout << keyName << "をキーとしたクイックソート終了" << std::endl << std::endl;
+	};
 
 	std::cout << "テキストファイル読み込み開始" << std::endl;
 	while (!ifs.eof())
@@ -39,26 +54,43 @@ int main()
 		};
 	}
 	std::cout << "テキストファイル読み込み成功" << std::endl;
-	
+
 	std::cout << std::endl;
 
-	std::cout << "クイックソート開始" << std::endl;
-	// ソートのキーを設定(スコアを第１とし、スコアが同じ場合はユーザ名の辞書順に
-	auto cmpFunc = [](const ScoreData& a, const ScoreData&b) 
-	{ 
-		if (a.score == b.score)
-			return a.userName < b.userName;
-		else
-			return a.score < b.score;
-	};
-	list.QuickSort(cmpFunc);
-	std::cout << "クイックソート終了" << std::endl << std::endl;
-	
-	// 読み込んだデータを全表示
-	std::cout << "読み込んだデータの表示開始" << std::endl;
-	for (const auto& data : list)
-		std::cout << "Score: " << std::setw(5) << data.score << " --- UserName: " << data.userName << std::endl;
-	std::cout << "読み込んだデータの表示終了" << std::endl;
+	// スコアをキーとしてソートを実行
+	{
+		auto cmpFunc = [](const ScoreData& a, const ScoreData& b)
+		{
+			if (a.score == b.score)
+				return a.userName < b.userName;
+			else
+				return a.score < b.score;
+		};
+		showSortFunc(cmpFunc, "スコア");
+	}
+	// データを全表示
+	showDataFunc();
+
+	std::cout << std::endl;
+	std::cout << "----------------------------------------------------------" << std::endl;
+	std::cout << "Enterキー入力でユーザ名をキーとしたソート結果を表示します" << std::endl;
+	std::cout << "----------------------------------------------------------" << std::endl;
+	std::cin.get();
+	std::system("cls");
+
+	// ユーザ名をキーとしてソートを実行
+	{
+		auto cmpFunc = [](const ScoreData& a, const ScoreData&b)
+		{
+			if (a.userName == b.userName)
+				return a.score < b.score;
+			else
+				return a.userName < b.userName;
+		};
+		showSortFunc(cmpFunc, "ユーザ名");
+	}
+	// データを全表示
+	showDataFunc();
 
 	return 0;
 }

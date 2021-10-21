@@ -86,10 +86,10 @@ TEST_P(ListQuickSortTest, TestListQuickSort)
 TEST_P(ListQuickSortTest, TestListQuickSortDupKey)
 {
 	// 必要なデータの用意
-	const ScoreData zeroC{ 0,"c" };
+	const ScoreData zeroA{ 0,"a" };
+	const ScoreData zeroB{ 0,"b" };
 	const ScoreData oneA{ 1,"a" };
-	const ScoreData twoB{ 2,"b" };
-	const ScoreData setupDatas[] = { oneA, zeroC, zeroC, twoB };
+	const ScoreData setupDatas[] = { oneA, zeroA, zeroB };
 
 	// 重複したキーがある複数要素の未整列リストを用意
 	for (const auto& data : setupDatas)
@@ -101,10 +101,10 @@ TEST_P(ListQuickSortTest, TestListQuickSortDupKey)
 	// チェック用データの用意
 	const ScoreData expecteds[][4] =
 	{
-		{ zeroC, zeroC, oneA, twoB },	// スコア昇順
-		{ twoB, oneA, zeroC, zeroC },	// スコア降順
-		{ oneA, twoB, zeroC, zeroC },	// ユーザ名昇順
-		{ zeroC, zeroC, twoB, oneA },	// ユーザ名降順
+		{ zeroA, zeroB, oneA },	// スコア昇順
+		{ oneA, zeroB, zeroA },	// スコア降順
+		{ zeroA, oneA, zeroB },	// ユーザ名昇順
+		{ zeroB, zeroA, oneA },	// ユーザ名降順
 	};						 
 	const ScoreData* pExpected = expecteds[GetTestNumber()];
 
