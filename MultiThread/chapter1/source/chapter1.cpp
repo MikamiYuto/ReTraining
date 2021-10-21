@@ -91,7 +91,7 @@ namespace ex02_MultiThread
 			};
 
 			//----- 並列処理実行
-			// パラメタ生成処理を行うスレッド
+			// パラメタの生成処理を行うスレッド生成
 			std::thread spawnThread([&spawnParamFunc]
 			{ 
 				for (int i = 0; i < N; ++i) 
