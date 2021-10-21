@@ -22,6 +22,9 @@
 #define	MAX		13
 #define RESULT	833197		// この計算はこの値になります
 
+//#define SINGLE
+#define MULTI
+
 //-----------------------------------------------------------------------------
 // Using Namespace
 //-----------------------------------------------------------------------------
@@ -41,31 +44,42 @@ namespace ex02_MultiThread
 		*//***************************************************************************/
 		int DoWork()
 		{
+			int sum = 0;
+
+#if defined SINGLE
+			for (int i = 0; i < N; ++i)
+			{
+				int x = Random(MIN, MAX);
+				int y = Random(MIN, MAX);
+				int z = Random(MIN, MAX);
+				sum += Tarai(x, y, z);
+			}
+#elif defined MULTI
 			// パラメタ定義
 			struct Param { int x, y, z; };
-			int sum = 0;
 			// パラメタを蓄えるコンテナとスレッドを用意
 			std::vector<Param> params;
 			std::vector<std::thread> ths;
 			params.reserve(N);
 			ths.reserve(std::thread::hardware_concurrency());
 			// 排他制御用
-			std::mutex mtx;
+			std::mutex paramMtx;
+			std::mutex sumMtx;
 			// パラメタ生成関数
-			auto spawnParamFunc = [&params, &mtx]
+			auto spawnParamFunc = [&params, &paramMtx]
 			{
-				std::lock_guard<std::mutex> lock(mtx);
+				std::lock_guard<std::mutex> lock(paramMtx);
 				Param param{ Random(MIN, MAX), Random(MIN, MAX), Random(MIN, MAX) };
 				params.emplace_back(param);
 				return param;
 			};
 			// 合算関数
-			auto addFunc = [&sum, &mtx](int add)
+			auto addFunc = [&sum, &sumMtx](int add)
 			{
-				std::lock_guard<std::mutex> lock(mtx);
+				std::lock_guard<std::mutex> lock(sumMtx);
 				sum += add;
 			};
-			// 並列用にスレッド生成
+			// 並列用にスレッド生成(hardware_concurrency()で得られる値以上のスレッドは生成しても効果なさそう
 			for (int i = 0; i < 10; ++i)
 			{
 				ths.emplace_back(std::thread([&spawnParamFunc, &addFunc, &params]
@@ -80,7 +94,7 @@ namespace ex02_MultiThread
 			// 処理待ち
 			for (auto& th : ths)
 				th.join();
-
+#endif
 			return sum;
 		}
 	}

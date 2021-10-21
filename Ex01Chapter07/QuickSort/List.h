@@ -109,7 +109,7 @@ public:
 	};
 
 private:
-	using CmpDataFunc = bool(*)(bool, const T&, const T&);
+	using CmpDataFunc = bool(*)(const T&, const T&);
 
 private:
 	Node*	m_pDummyNode;	//!< ダミーノード
@@ -174,10 +174,9 @@ public:
 	ConstIterator end() const;
 	/**
 	 * @brief				クイックソート
-	 * @param[in] isAsk		整列順の指定(true:昇順、false:降順
 	 * @param[in] cmpFunc	要素比較関数、nullptrの場合は何もしない
 	 */
-	void QuickSort(bool isAsk, CmpDataFunc cmpFunc);
+	void QuickSort(CmpDataFunc cmpFunc);
 
 private:
 	/**
@@ -187,31 +186,29 @@ private:
 	 */
 	void Swap(Node* pA, Node* pB);
 	/**
-	 * @brief		中央値の取得
-	 * @param[in] a 比べる値その１
-	 * @param[in] b 比べる値その２
-	 * @param[in] c 比べる値その３
-	 * @return		引数の中央値
+	 * @brief				中央値の取得
+	 * @param[in] cmpFunc	比較関数
+	 * @param[in] a			比べる値その１
+	 * @param[in] b			比べる値その２
+	 * @param[in] c			比べる値その３
+	 * @return				引数の中央値
 	 */
 	const T& Median(CmpDataFunc cmpFunc, const T& a, const T&b, const T&c) const;
 	/**
 	 * @brief				要素を大小に分割(整列)する
-	 * @param[in] isAsk		整列順の指定(true:昇順、false:降順
 	 * @param[in] cmpFunc	要素比較関数
 	 * @param[in] pivot		分割する基準値
 	 * @param[in] L			整列する範囲の先頭ノード
 	 * @param[in] R			整列する範囲の末尾ノード
-	 * @param[out] 	ML		受取用、大小に整列した区間の境目になる先頭側ノード
-	 * @param[out] 	MR		受取用、大小に整列した区間の境目になる末尾側ノード
+	 * @return				整列の中間ノード
 	 */
-	void Partition(bool isAsk, CmpDataFunc cmpFunc, const T& pivot, Node* L, Node* R, Node*& ML, Node*& MR);
+	Node Partition(CmpDataFunc cmpFunc, const T& pivot, Node* L, Node* R);
 	/**
 	 * @brief				クイックソート(再帰
-	 * @param[in] isAsk		整列順の指定(true:昇順、false:降順
 	 * @param[in] cmpFunc	要素比較関数
 	 * @param[in] L			整列する範囲の先頭ノード
 	 * @param[in] R			整列する範囲の末尾ノード
 	 */
-	void QuickSort(bool isAsk, CmpDataFunc cmpFunc, Node* L, Node* R);
+	void QuickSort(CmpDataFunc cmpFunc, Node* L, Node* R);
 };
 #include "List.inl"

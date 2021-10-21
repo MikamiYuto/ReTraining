@@ -10,6 +10,7 @@
  //----- インクルード
 #include "gtest/gtest.h"
 #include "../QuickSort/List.h"
+#include "../QuickSort/ScoreData.h"
 
 
 //--------------------------------------------------------------------------------
@@ -23,16 +24,19 @@
 
 
 /** クイックソートメソッドのテスト用フィクスチャクラス */
-class ListQuickSortTest : public ::testing::TestWithParam<bool>
+class ListQuickSortTest : public ::testing::TestWithParam<bool(*)(const ScoreData&,const ScoreData&)>
 {
 protected:
-	virtual void SetUp()
+	/**
+	 * @brief テスト番号の取得
+	 */
+	int GetTestNumber()
 	{
-		m_CmpFunc = [](bool isAsk, const int& a, const int& b) { return isAsk ? a < b : a > b; };
+		auto testInfo = ::testing::UnitTest::GetInstance()->current_test_info();
+		const std::string& testName = testInfo->name();
+		return std::stoi(testName.c_str() + testName.rfind("/") + 1);
 	}
 
-
 protected:
-	List<int> m_List;
-	bool(*m_CmpFunc)(bool, const int&, const int&);
+	List<ScoreData> m_List;
 };

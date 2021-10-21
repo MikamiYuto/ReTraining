@@ -225,7 +225,7 @@ typename List<T>::ConstIterator List<T>::end() const
 // https://ufcpp.net/study/algorithm/sort_quick.html ←中央値辺りを参考
 //-----------------------------------------------------------------------------
 template<class T>
-void List<T>::QuickSort(bool isAsk, CmpDataFunc cmpFunc)
+void List<T>::QuickSort(CmpDataFunc cmpFunc)
 {
 	// キーが設定されていなければ何もしない
 	if (!cmpFunc) return;
@@ -233,7 +233,7 @@ void List<T>::QuickSort(bool isAsk, CmpDataFunc cmpFunc)
 	if (m_pDummyNode->pBack == m_pDummyNode->pFront) return;
 
 	// 再帰開始
-	QuickSort(isAsk, cmpFunc, m_pDummyNode->pBack, m_pDummyNode->pFront);
+	QuickSort(cmpFunc, m_pDummyNode->pBack, m_pDummyNode->pFront);
 }
 //-----------------------------------------------------------------------------
 template<class T>
@@ -249,9 +249,9 @@ template<class T>
 const T& List<T>::Median(CmpDataFunc cmpFunc, const T& a, const T& b, const T& c) const
 {
 	// 3つの値の中から中央の値を求める
-	bool ab = cmpFunc(true, a, b);
-	bool bc = cmpFunc(true, b, c);
-	bool ac = cmpFunc(true, a, c);
+	bool ab = cmpFunc(a, b);
+	bool bc = cmpFunc(b, c);
+	bool ac = cmpFunc(a, c);
 	if (ab && bc || !bc && !ab)
 		return b;
 	else if (!ab && ac || !ac && ab)
@@ -261,14 +261,14 @@ const T& List<T>::Median(CmpDataFunc cmpFunc, const T& a, const T& b, const T& c
 }
 //-----------------------------------------------------------------------------
 template<class T>
-void List<T>::Partition(bool isAsk, CmpDataFunc cmpFunc, const T& pivot, typename Node* L, typename Node* R, typename Node*& outML, typename Node*& outMR)
+typename List<T>::Node List<T>::Partition(CmpDataFunc cmpFunc, const T& pivot, typename Node* L, typename Node* R)
 {
 	// 基準値を元に大小へ分割する
 	while (true)
 	{
 		// 基準値を超えるノードを探索
-		while (cmpFunc(isAsk, L->data, pivot)) L = L->pBack;
-		while (cmpFunc(isAsk, pivot, R->data)) R = R->pFront;
+		while (cmpFunc(L->data, pivot)) L = L->pBack;
+		while (cmpFunc(pivot, R->data)) R = R->pFront;
 
 		// 走査しているノードが交差したら終了
 		if (L == R || L->pFront == R) break;
@@ -282,20 +282,22 @@ void List<T>::Partition(bool isAsk, CmpDataFunc cmpFunc, const T& pivot, typenam
 	}
 
 	// 次の整列区間を返却
-	outML = L->pFront;
-	outMR = R->pBack;
+	Node M;
+	M.pFront = L->pFront;
+	M.pBack = R->pBack;
+	return M;
 }
 //-----------------------------------------------------------------------------
 template<class T>
-void List<T>::QuickSort(bool isAsk, CmpDataFunc cmpFunc, typename Node* L, typename Node* R)
+void List<T>::QuickSort(CmpDataFunc cmpFunc, typename Node* L, typename Node* R)
 {
 	// 整列に用いる基準値を整列区間の先頭、末尾、末尾の一つ前の値から選定(最悪計算量を避けるための処理
 	const T& pivot = Median(cmpFunc, L->data, R->data, R->pFront->data);
+	
 	// 基準値を元に整列区間のリスト要素を大小に分割
-	Node* ML = nullptr;
-	Node* MR = nullptr;
-	Partition(isAsk, cmpFunc, pivot, L, R, ML, MR);
+	Node M = Partition(cmpFunc, pivot, L, R);
+
 	// 再帰的に処理
-	if (!(L == ML || L->pFront == ML)) QuickSort(isAsk, cmpFunc, L, ML);
-	if (!(R == MR || R->pBack == MR)) QuickSort(isAsk, cmpFunc, MR, R);
+	if (!(L == M.pFront || L->pFront == M.pFront)) QuickSort(cmpFunc, L, M.pFront);
+	if (!(R == M.pBack || R->pBack == M.pBack)) QuickSort(cmpFunc, M.pBack, R);
 }

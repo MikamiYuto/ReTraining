@@ -44,14 +44,14 @@ int main()
 
 	std::cout << "クイックソート開始" << std::endl;
 	// ソートのキーを設定(スコアを第１とし、スコアが同じ場合はユーザ名の辞書順に
-	auto cmpFunc = [](bool isAsk, const ScoreData& a, const ScoreData&b) 
+	auto cmpFunc = [](const ScoreData& a, const ScoreData&b) 
 	{ 
 		if (a.score == b.score)
 			return a.userName < b.userName;
 		else
-			return isAsk ? a.score < b.score : a.score > b.score;
+			return a.score < b.score;
 	};
-	list.QuickSort(true, cmpFunc);
+	list.QuickSort(cmpFunc);
 	std::cout << "クイックソート終了" << std::endl << std::endl;
 	
 	// 読み込んだデータを全表示

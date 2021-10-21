@@ -38,13 +38,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\QuickSort\List.h" />
+    <ClInclude Include="..\QuickSort\ScoreData.h" />
     <ClInclude Include="QuickSortTest.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\QuickSort\ScoreData.cpp" />
     <ClCompile Include="QuickSortTest.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup />
