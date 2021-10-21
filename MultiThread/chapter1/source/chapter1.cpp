@@ -9,7 +9,8 @@
 #include <stdio.h>
 #include <functions.h>
 #include <crtdbg.h>
-#include <vector>
+#include <queue>
+#include <list>
 #include <thread>
 #include <mutex>
 
@@ -55,23 +56,32 @@ namespace ex02_MultiThread
 				sum += Tarai(x, y, z);
 			}
 #elif defined MULTI
-			// パラメタ定義
-			struct Param { int x, y, z; };
-			// パラメタを蓄えるコンテナとスレッドを用意
-			std::vector<Param> params;
-			std::vector<std::thread> ths;
-			params.reserve(N);
-			ths.reserve(std::thread::hardware_concurrency());
-			// 排他制御用
-			std::mutex paramMtx;
-			std::mutex sumMtx;
+			//----- 必要な変数、関数定義
+			struct Param { int x, y, z; };	// パラメタ構造定義
+			std::queue<Param> paramQueue;	// 生成したパラメタを蓄えるコンテナ
+			std::mutex paramMtx;			// パラメタコンテナの排他制御用
+			std::mutex sumMtx;				// 合計を保持する変数の排他制御用
+			bool isSpawnFinish = false;		// パラメタの生成完了フラグ
 			// パラメタ生成関数
-			auto spawnParamFunc = [&params, &paramMtx]
+			auto spawnParamFunc = [&paramQueue, &paramMtx]
 			{
 				std::lock_guard<std::mutex> lock(paramMtx);
-				Param param{ Random(MIN, MAX), Random(MIN, MAX), Random(MIN, MAX) };
-				params.emplace_back(param);
-				return param;
+				paramQueue.push(Param{ Random(MIN, MAX), Random(MIN, MAX), Random(MIN, MAX) });
+			};
+			// パラメタ取得関数
+			auto getParamFunc = [&paramQueue, &paramMtx](std::list<Param>& out)
+			{
+				std::lock_guard<std::mutex> lock(paramMtx);
+				if (paramQueue.empty())
+					return false;
+				// パラメタを1つ取得
+				for (int i = 0; i < 1 && !paramQueue.empty(); ++i)
+				{
+					Param param = paramQueue.front();
+					paramQueue.pop();
+					out.push_back(param);
+				}
+				return true;
 			};
 			// 合算関数
 			auto addFunc = [&sum, &sumMtx](int add)
@@ -79,20 +89,38 @@ namespace ex02_MultiThread
 				std::lock_guard<std::mutex> lock(sumMtx);
 				sum += add;
 			};
-			// 並列用にスレッド生成(hardware_concurrency()で得られる値以上のスレッドは生成しても効果なさそう
-			for (int i = 0; i < 10; ++i)
+
+			//----- 並列処理実行
+			// パラメタ生成処理を行うスレッド
+			std::thread spawnThread([&spawnParamFunc]
+			{ 
+				for (int i = 0; i < N; ++i) 
+					spawnParamFunc(); 
+			});
+			
+			// Tarai計算処理用のスレッド生成
+			std::vector<std::thread> taraiThreads;
+			const int maxThread = std::thread::hardware_concurrency();
+			taraiThreads.reserve(maxThread);
+			for (int i = 0; i < maxThread; ++i)
 			{
-				ths.emplace_back(std::thread([&spawnParamFunc, &addFunc, &params]
+				taraiThreads.emplace_back(std::thread([&getParamFunc, &addFunc, &isSpawnFinish]
 				{
-					for (int i = 0; i < 10000; ++i)
+					std::list<Param> paramList;
+					// 全てのパラメタを処理し終えるまで続行
+					while (!isSpawnFinish || getParamFunc(paramList))
 					{
-						Param param = spawnParamFunc();
-						addFunc(Tarai(param.x, param.y, param.z));
+						for(auto& param : paramList)
+							addFunc(Tarai(param.x, param.y, param.z));
+						paramList.clear();
 					}
 				}));
 			}
-			// 処理待ち
-			for (auto& th : ths)
+
+			//----- 処理待ち
+			spawnThread.join();
+			isSpawnFinish = true;
+			for (auto& th : taraiThreads)
 				th.join();
 #endif
 			return sum;
