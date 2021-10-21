@@ -246,14 +246,14 @@ void List<T>::Swap(typename Node* pA, typename Node* pB)
 }
 //-----------------------------------------------------------------------------
 template<class T>
-const T& List<T>::Median(const T& a, const T& b, const T& c) const
+const T& List<T>::Median(CmpDataFunc cmpFunc, const T& a, const T& b, const T& c) const
 {
 	// 3つの値の中から中央の値を求める
-	bool ab = a < b;
-	bool bc = b < c;
-	bool ac = a < c;
+	bool ab = cmpFunc(true, a, b);
+	bool bc = cmpFunc(true, b, c);
+	bool ac = cmpFunc(true, a, c);
 	if (ab && bc || !bc && !ab)
-		 return b;
+		return b;
 	else if (!ab && ac || !ac && ab)
 		return a;
 	else
@@ -289,8 +289,8 @@ void List<T>::Partition(bool isAsk, CmpDataFunc cmpFunc, const T& pivot, typenam
 template<class T>
 void List<T>::QuickSort(bool isAsk, CmpDataFunc cmpFunc, typename Node* L, typename Node* R)
 {
-	// 整列に用いる基準値を整列区間の先頭、先頭の次、末尾の値から選定(最悪計算量を避けるための処理
-	const T& pivot = Median(L->pBack->data, L->data, R->data);
+	// 整列に用いる基準値を整列区間の先頭、末尾、末尾の一つ前の値から選定(最悪計算量を避けるための処理
+	const T& pivot = Median(cmpFunc, L->data, R->data, R->pFront->data);
 	// 基準値を元に整列区間のリスト要素を大小に分割
 	Node* ML = nullptr;
 	Node* MR = nullptr;

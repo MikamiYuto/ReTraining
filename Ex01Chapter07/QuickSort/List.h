@@ -193,7 +193,7 @@ private:
 	 * @param[in] c 比べる値その３
 	 * @return		引数の中央値
 	 */
-	const T& Median(const T& a, const T&b, const T&c) const;
+	const T& Median(CmpDataFunc cmpFunc, const T& a, const T&b, const T&c) const;
 	/**
 	 * @brief				要素を大小に分割(整列)する
 	 * @param[in] isAsk		整列順の指定(true:昇順、false:降順
