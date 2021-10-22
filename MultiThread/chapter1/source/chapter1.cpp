@@ -18,10 +18,10 @@
 // Macro Definitions
 //-----------------------------------------------------------------------------
 
-#define N		100000
+#define N		1000000
 #define	MIN		1
-#define	MAX		13
-#define RESULT	833197		// この計算はこの値になります
+#define	MAX		9
+#define RESULT	5651388		// この計算はこの値になります
 
 //#define SINGLE
 #define MULTI
@@ -75,7 +75,7 @@ namespace ex02_MultiThread
 				if (paramQueue.empty())
 					return false;
 				// パラメタを1つ取得
-				for (int i = 0; i < 1 && !paramQueue.empty(); ++i)
+				for (int i = 0; i < 10 && !paramQueue.empty(); ++i)
 				{
 					Param param = paramQueue.front();
 					paramQueue.pop();
@@ -110,8 +110,10 @@ namespace ex02_MultiThread
 					// 全てのパラメタを処理し終えるまで続行
 					while (!isSpawnFinish || getParamFunc(paramList))
 					{
+						int tempSum = 0;
 						for(auto& param : paramList)
-							addFunc(Tarai(param.x, param.y, param.z));
+							tempSum += Tarai(param.x, param.y, param.z);
+						addFunc(tempSum);
 						paramList.clear();
 					}
 				}));
