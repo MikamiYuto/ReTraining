@@ -72,15 +72,10 @@ int main()
 	showDataFunc();
 
 	std::cout << std::endl;
-	std::cout << "----------------------------------------------------------" << std::endl;
-	std::cout << "Enterキー入力でユーザ名をキーとしたソート結果を表示します" << std::endl;
-	std::cout << "----------------------------------------------------------" << std::endl;
-	std::cin.get();
-	std::system("cls");
 
 	// ユーザ名をキーとしてソートを実行
 	{
-		auto cmpFunc = [](const ScoreData& a, const ScoreData&b)
+		auto cmpFunc = [](const ScoreData& a, const ScoreData& b)
 		{
 			if (a.userName == b.userName)
 				return a.score < b.score;

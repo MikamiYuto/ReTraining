@@ -206,9 +206,10 @@ private:
 	/**
 	 * @brief				クイックソート(再帰
 	 * @param[in] cmpFunc	要素比較関数
+	 * @pivot[in] pivot		基準値の候補
 	 * @param[in] L			整列する範囲の先頭ノード
 	 * @param[in] R			整列する範囲の末尾ノード
 	 */
-	void QuickSort(CmpDataFunc cmpFunc, Node* L, Node* R);
+	void QuickSort(CmpDataFunc cmpFunc, const T& prePivot, Node* L, Node* R);
 };
 #include "List.inl"
