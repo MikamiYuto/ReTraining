@@ -239,10 +239,14 @@ void List<T>::QuickSort(CmpDataFunc cmpFunc)
 template<class T>
 void List<T>::Swap(typename Node* pA, typename Node* pB)
 {
+#if 1
+	// 値を交換するパターン
 	T temp = std::move(pA->data);
 	pA->data = std::move(pB->data);
 	pB->data = std::move(temp);
-	// 接続を変えるパターンもあり
+#else
+	// 接続を変えるパターン
+#endif
 }
 //-----------------------------------------------------------------------------
 template<class T>
@@ -292,7 +296,7 @@ template<class T>
 void List<T>::QuickSort(CmpDataFunc cmpFunc, typename Node* L, typename Node* R)
 {
 	// 整列に用いる基準値を整列区間の先頭、末尾前、末尾からの中央値を選択
-	const T& pivot = Median(cmpFunc, L->data, R->pFront->data, R->data);
+	const T pivot = Median(cmpFunc, L->data, R->pFront->data, R->data);
 	
 	// 基準値を元に整列区間のリスト要素を大小に分割
 	Node M = Partition(cmpFunc, pivot, L, R);

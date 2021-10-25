@@ -101,10 +101,10 @@ TEST_P(ListQuickSortTest, TestListQuickSortDupKey)
 	// チェック用データの用意
 	const ScoreData expecteds[][4] =
 	{
-		{ zeroA, zeroB, oneA },	// スコア昇順
+		{ zeroB, zeroA, oneA },	// スコア昇順
 		{ oneA, zeroB, zeroA },	// スコア降順
 		{ zeroA, oneA, zeroB },	// ユーザ名昇順
-		{ zeroB, oneA, zeroA },	// ユーザ名降順
+		{ zeroB, zeroA, oneA },	// ユーザ名降順
 	};						 
 	const ScoreData* pExpected = expecteds[GetTestNumber()];
 
