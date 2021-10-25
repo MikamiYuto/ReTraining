@@ -246,6 +246,37 @@ void List<T>::Swap(typename Node* pA, typename Node* pB)
 	pB->data = std::move(temp);
 #else
 	// 接続を変えるパターン
+	if (pA->pBack == pB)
+	{// 隣接する場合(?-A-B-?
+		pB->pFront = pA->pFront;
+		pA->pFront = pB;
+		pA->pBack = pB->pBack;
+		pB->pBack = pA;
+		pA->pBack->pFront = pA;
+		pB->pFront->pBack = pB;
+	}
+	else if (pA->pFront == pB)
+	{// 隣接する場合(?-B-A-?
+		pA->pFront = pB->pFront;
+		pB->pFront = pA;
+		pB->pBack = pA->pBack;
+		pA->pBack = pB;
+		pB->pBack->pFront = pB;
+		pA->pFront->pBack = pA;
+	}
+	else
+	{// 離れている場合
+		Node* temp = pA->pFront;
+		pA->pFront = pB->pFront;
+		pB->pFront = temp;
+		temp = pA->pBack;
+		pA->pBack = pB->pBack;
+		pB->pBack = temp;
+		pA->pFront->pBack = pA;
+		pA->pBack->pFront = pA;
+		pB->pFront->pBack = pB;
+		pB->pBack->pFront = pB;
+	}
 #endif
 }
 //-----------------------------------------------------------------------------
@@ -277,12 +308,12 @@ typename List<T>::Node List<T>::Partition(CmpDataFunc cmpFunc, const T& pivot, t
 		// 走査しているノードが交差したら終了
 		if (L == R || L->pFront == R) break;
 
-		// 値交換
-		Swap(L, R);
-		
 		// 次の要素から走査を始める
 		L = L->pBack;
 		R = R->pFront;
+		
+		// 値交換
+		Swap(L->pFront, R->pBack);
 	}
 
 	// 次の整列区間を返却
@@ -296,6 +327,7 @@ template<class T>
 void List<T>::QuickSort(CmpDataFunc cmpFunc, typename Node* L, typename Node* R)
 {
 	// 整列に用いる基準値を整列区間の先頭、末尾前、末尾からの中央値を選択
+	// 参照の場合、値交換により整列中に基準値が変わるため不可(接続交換なら参照でも行けそうだけど、修正箇所が多くなりそうなため断念
 	const T pivot = Median(cmpFunc, L->data, R->pFront->data, R->data);
 	
 	// 基準値を元に整列区間のリスト要素を大小に分割
